@@ -88,7 +88,7 @@ Given an `MlService`:
 
 ```scala
 val service = MlService(
-  Auth.Login("foo", "bar"),
+  Auth.Login("jsmith", "Tr0ub4dor&3"),
   Classifier("news20", 20)
 )
 ```
@@ -255,7 +255,7 @@ Aside : these sure look like they could be automatically generated...
 classifierLens.set(service)(
   nameLens.set(service.classifier)("news_20")
 )
-// res1: MlService = MlService(Login(foo,bar),Classifier(news_20,20))
+// res1: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
 ```
 
 --
@@ -359,10 +359,10 @@ And this works as expected:
 
 ```scala
 classifierName.set(service)("news_20")
-// res2: MlService = MlService(Login(foo,bar),Classifier(news_20,20))
+// res2: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
 
 classifierName.modify(service)(_.toUpperCase)
-// res3: MlService = MlService(Login(foo,bar),Classifier(NEWS20,20))
+// res3: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(NEWS20,20))
 ```
 
 ---
@@ -602,7 +602,7 @@ val userName = composePL(
 
 ```scala
 userName.set(service)("bar")
-// res4: MlService = MlService(Login(foo,bar),Classifier(news20,20))
+// res4: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
 ---
@@ -632,10 +632,10 @@ The use-site API is the same as ours:
 
 ```scala
 serviceName.set(service)("news_20")
-// res5: MlService = MlService(Login(foo,bar),Classifier(news_20,20))
+// res5: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
 
-userName.set(service)("baz")
-// res6: MlService = MlService(Login(baz,bar),Classifier(news20,20))
+userName.set(service)("psmith")
+// res6: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
 ---
@@ -663,10 +663,10 @@ The use-site API is almost the same as ours:
 
 ```scala
 serviceName.set("news_20")(service)
-// res7: MlService = MlService(Login(foo,bar),Classifier(news_20,20))
+// res7: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
 
 userName.set("baz")(service)
-// res8: MlService = MlService(Login(baz,bar),Classifier(news20,20))
+// res8: MlService = MlService(Login(baz,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
 ---
