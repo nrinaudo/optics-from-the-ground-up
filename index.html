@@ -93,7 +93,7 @@ val service = MlService(
 )
 ```
 
-We must change the classifier name to `news_20`.
+We want to change the classifier name to `news_20`.
 
 ---
 
@@ -181,7 +181,7 @@ trait Lens[S, A] {
 
 --
 
-This looks painful to instanciate. Let's give ourselves helpers.
+This looks painful to instantiate. Let's give ourselves helpers.
 
 ---
 
@@ -243,6 +243,10 @@ val nameLens = Lens[Classifier, String](
 )
 ```
 
+???
+
+We *could* create a `Lens[MlService, String]` directly, but it's a better approach to design the smallest possible pieces and see if we have ways of easily composing them into larger pieces.
+
 --
 
 Aside : these sure look like they could be automatically generated...
@@ -261,6 +265,8 @@ classifierLens.set(service)(
 --
 
 Well, this is worse than what we started with...
+
+It often helps to turn such things in a function to identify more generic patterns.
 
 ---
 
@@ -576,10 +582,13 @@ def composeLP[S, A, B](
 ## Using prisms
 
 ```scala
-val loginPrism = Prism[Auth, Auth.Login]((a, _) => a, {
-  case s: Auth.Login => Some(s)
-  case _             => None
-})
+val loginPrism = Prism[Auth, Auth.Login](
+  (a, _) => a,
+  {
+    case s: Auth.Login => Some(s)
+    case _             => None
+  }
+)
 
 val userNameLens = Lens[Auth.Login, String](
   (s, a) => s.copy(user = a),
@@ -704,10 +713,28 @@ object Config {
 
 For example:
 
+```json
+{
+  "auth": {
+    "token": "0xCAFEBABE"
+  },
+  "classifier": {
+    "name"      : "news20"
+    "classCount": 20
+  }
+}
+```
+
+---
+
+## MlService configuration ²
+
+For example:
+
 ```scala
 val conf = Config.Section(Map(
   "auth" -> Config.Section(Map(
-    "token"      -> Config.Field("0xCAFEBABE")
+    "token" -> Config.Field("0xCAFEBABE")
   )),
   "classifier" -> Config.Section(Map(
     "name"       -> Config.Field("news20"),
