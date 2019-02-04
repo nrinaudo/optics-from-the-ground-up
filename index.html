@@ -202,7 +202,7 @@ object Lens {
 
 --
 
-Let's name a few of these types:
+Naming a few of these types will be helpful later:
 
 ```scala
 type Set[S, A] = (S, A) => S
@@ -581,15 +581,25 @@ def composeLP[S, A, B](
 
 ## Using prisms
 
+We can now write the prism we needed:
+
 ```scala
 val loginPrism = Prism[Auth, Auth.Login](
-  (a, _) => a,
+  (_, a) => a,
   {
     case s: Auth.Login => Some(s)
     case _             => None
   }
 )
+```
 
+---
+
+## Using prisms ²
+
+We'll also need to go from an `Auth.Login` to its name:
+
+```scala
 val userNameLens = Lens[Auth.Login, String](
   (s, a) => s.copy(user = a),
   s      => s.user
@@ -598,7 +608,9 @@ val userNameLens = Lens[Auth.Login, String](
 
 ---
 
-## Using prisms ²
+## Using prisms ³
+
+Here's our complete prism:
 
 ```scala
 val userName = composePL(
@@ -610,8 +622,8 @@ val userName = composePL(
 --
 
 ```scala
-userName.set(service)("bar")
-// res4: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news20,20))
+userName.set(service)("psmith")
+// res4: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
 ---
@@ -674,8 +686,8 @@ The use-site API is almost the same as ours:
 serviceName.set("news_20")(service)
 // res7: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
 
-userName.set("baz")(service)
-// res8: MlService = MlService(Login(baz,Tr0ub4dor&3),Classifier(news20,20))
+userName.set("psmith")(service)
+// res8: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
 ---
@@ -947,6 +959,14 @@ classifierName.set(conf)(Config.Field("news_20"))
 class: center, middle
 
 # Wrapping things up
+
+---
+
+## Conclusions
+
+* Optics let you easily work with arbitrary deep ADTs
+* They do not rely on deep theoretical premises
+* Existing libraries such as [shapeless] and [Monocle] make creating them (almost) painless
 
 ---
 
