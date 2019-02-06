@@ -9,7 +9,7 @@
       <textarea id="source">
 class: center, middle
 
-# Optics from the group up
+# Optics from the ground up
 
 Nicolas Rinaudo • [`@NicolasRinaudo`](https://twitter.com/NicolasRinaudo) • [Besedo](http://besedo.com)
 
@@ -124,9 +124,11 @@ service.copy(
 
 ```scala
 trait Setter[S, A] {
-  def set(s: S)(a: A): S
+  def set(a: A)(s: S): S
 }
 ```
+
+The type of _set a classifier name_ would be `Setter[MlService, String]`.
 
 --
 
@@ -138,8 +140,8 @@ Sometimes though, we don't want to _set_ but to _modify_.
 
 ```scala
 trait Setter[S, A] {
-  def set(s: S)(a: A): S
-  def modify(s: S)(f: A => A): S
+  def set(a: A)(s: S): S
+  def modify(f: A => A)(s: S): S
 }
 ```
 
@@ -153,10 +155,10 @@ trait Setter[S, A] {
 
 ```scala
 trait Setter[S, A] {
-  def set(s: S)(a: A): S
+  def set(a: A)(s: S): S
   def get(s: S): A
 
-  def modify(s: S)(f: A => A): S = set(s)(f(get(s)))
+  def modify(f: A => A)(s: S): S = set(f(get(s)))(s)
 }
 ```
 
@@ -172,10 +174,10 @@ Our type allows us to _focus_ on a specific part of an ADT...
 
 ```scala
 trait Lens[S, A] {
-  def set(s: S)(a: A): S
+  def set(a: A)(s: S): S
   def get(s: S): A
 
-  def modify(s: S)(f: A => A): S = set(s)(f(get(s)))
+  def modify(f: A => A)(s: S): S = set(f(get(s)))(s)
 }
 ```
 
@@ -190,11 +192,11 @@ This looks painful to instantiate. Let's give ourselves helpers.
 ```scala
 object Lens {
   def apply[S, A](
-    setter: (S, A) => S,
+    setter: (A, S) => S,
     getter: S => A
   ) = new Lens[S, A] {
 
-    override def set(s: S)(a: A) = setter(s, a)
+    override def set(a: A)(s: S) = setter(a, s)
     override def get(s: S)       = getter(s)
   }
 }
@@ -205,7 +207,7 @@ object Lens {
 Naming a few of these types will be helpful later:
 
 ```scala
-type Set[S, A] = (S, A) => S
+type Set[S, A] = (A, S) => S
 type Get[S, A] = S => A
 ```
 
@@ -219,7 +221,7 @@ object Lens {
     getter: Get[S, A]
   ) = new Lens[S, A] {
 
-    override def set(s: S)(a: A) = setter(s, a)
+    override def set(a: A)(s: S) = setter(a, s)
     override def get(s: S)       = getter(s)
   }
 }
@@ -233,12 +235,12 @@ Now that we have all this, we can try to actually use it.
 
 ```scala
 val classifierLens = Lens[MlService, Classifier](
-  (s, a) => s.copy(classifier = a),
+  (a, s) => s.copy(classifier = a),
   s      => s.classifier
 )
 
 val nameLens = Lens[Classifier, String](
-  (s, a) => s.copy(name = a),
+  (a, s) => s.copy(name = a),
   s      => s.name
 )
 ```
@@ -256,17 +258,14 @@ Aside : these sure look like they could be automatically generated...
 ## Using lenses ²
 
 ```scala
-classifierLens.set(service)(
-  nameLens.set(service.classifier)("news_20")
-)
+classifierLens.modify(nameLens.set("news_20"))(service)
 // res1: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
 ```
-
 --
 
-Well, this is worse than what we started with...
+This is better than what we started with, but not by much...
 
-It often helps to turn such things in a function to identify more generic patterns.
+It often helps to turn such things into functions to identify more generic patterns.
 
 ---
 
@@ -277,8 +276,8 @@ def setName(
     l1: Lens[MlService, Classifier],
     l2: Lens[Classifier, String]
   )
-  (s: MlService)(a: String): MlService =
-    l1.set(s)(l2.set(l1.get(s))(a))
+  (b: String)(s: MlService): MlService =
+    l1.modify(l2.set(b))(s)
 ```
 
 --
@@ -294,8 +293,8 @@ def setName[S, A, B](
     l1: Lens[S, A],
     l2: Lens[A, B]
   )
-  (s: S)(b: B): S =
-    l1.set(s)(l2.set(l1.get(s))(b))
+  (b: B)(s: S): S =
+    l1.modify(l2.set(b))(s)
 ```
 
 --
@@ -311,8 +310,8 @@ def setter[S, A, B](
     l1: Lens[S, A],
     l2: Lens[A, B]
   )
-  : Set[S, B] = (s, b) =>
-    l1.set(s)(l2.set(l1.get(s))(b))
+  : Set[S, B] = (b, s) =>
+    l1.modify(l2.set(b))(s)
 ```
 
 --
@@ -364,10 +363,10 @@ val classifierName = composeLL(
 And this works as expected:
 
 ```scala
-classifierName.set(service)("news_20")
+classifierName.set("news_20")(service)
 // res2: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
 
-classifierName.modify(service)(_.toUpperCase)
+classifierName.modify(_.toUpperCase)(service)
 // res3: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(NEWS20,20))
 ```
 
@@ -375,7 +374,7 @@ classifierName.modify(service)(_.toUpperCase)
 
 class: center, middle
 
-# Prisms
+# Prisms & Optionals
 
 ---
 
@@ -389,7 +388,7 @@ We'll need a `Lens` on the `auth` field:
 
 ```scala
 val authLens = Lens[MlService, Auth](
-  (s, a) => s.copy(auth = a),
+  (a, s) => s.copy(auth = a),
   s      => s.auth
 )
 ```
@@ -398,41 +397,22 @@ val authLens = Lens[MlService, Auth](
 
 ## Motivation ²
 
-What about the login field?
+We'll also need one on the `user` field of `Auth`:
 
 ```scala
-val loginLens = Lens[Auth, String](
-  (s, a) => ???,
+val userLens = Lens[Auth, String](
+  (a, s) => ???,
   s      => ???
 )
 ```
 
----
-
-## Setter for a sum type
-
-We can write the setter, but it looks very different from what we've done so far:
-
-
-```scala
-val setter: Set[Auth, String] =
-  (s, a) => s match {
-    case l: Auth.Login => l.copy(user = a)
-    case _             => s
-  }
-```
-
 --
 
-This is a first hint that we might need something different.
+Can we write the _getter_ part?
 
 ---
 
-## Getter for a sum type
-
-How do we do the getter, though?
-
---
+## `Lens.get` for a sum type
 
 ```scala
 val getter: Get[Auth, String] = {
@@ -441,67 +421,90 @@ val getter: Get[Auth, String] = {
 }
 ```
 
-We don't. Not all `Auth` values have a login.
+We can't. Not all `Auth` values have a user.
+
+--
+
+What we need is a way to go from `Auth` to `Auth.Login`.
+
+A way to separate `Auth` into its constituent types...
 
 ---
 
-## Prism
-
-We need another, similar tool:
+## Prism!
 
 ```scala
 trait Prism[S, A] {
-  def set(s: S)(a: A): S
   def get(s: S): Option[A]
-
-  def modify(s: S)(f: A => A): S = get(s) match {
-    case Some(a) => set(s)(f(a))
-    case None    => s
-  }
 }
 ```
 
+--
+
+We'll also need to turn a value back into the original type.
+
 ---
 
-## Creation helper
+## Prism ²
 
-As usual, let's write some instance creation goodies:
 
 ```scala
-object Prism {
-  def apply[S, A](
-    setter: (S, A) => S,
-    getter: S => Option[A]
-  ): Prism[S, A] = new Prism[S, A] {
+trait Prism[S, A] {
+  def get(s: S): Option[A]
+  def set(a: A): S
+}
+```
 
-    override def set(s: S)(a: A) = setter(s, a)
-    override def get(s: S)       = getter(s)
+--
+
+Given `get` and `set`, we should be able to implement `modify`.
+
+---
+
+## Prism ³
+
+```scala
+trait Prism[S, A] {
+  def get(s: S): Option[A]
+  def set(a: A): S
+
+  def modify(f: A => A)(s: S): S = get(s) match {
+    case Some(a) => set(f(a))
+    case None    => s
   }
 }
 ```
 
 --
 
-We've been down this road before though. We know we'll want to compose.
+Finally, we're going to need simple ways of creating `Prism` values.
 
 ---
 
-## `Prism` with `Prism`
+## Creation helper
+
 
 ```scala
-def composePP[S, A, B](
-  p1: Prism[S, A],
-  p2: Prism[A, B]
-) = new Prism[S, B] {
+object Prism {
+  def apply[S, A](
+    setter: A => S,
+    getter: PartialFunction[S, A]
+  ): Prism[S, A] = new Prism[S, A] {
+    val lifted = getter.lift
 
-  override def set(s: S)(b: B) = ???
-  override def get(s: S)       = ???
+    override def set(a: A) = setter(a)
+    override def get(s: S) = lifted(s)
+  }
 }
 ```
 
+--
+
+We've been down this road before. We know we'll want to compose.
+
 ---
 
-## `Prism` with `Prism`
+## Composing `Prism`s
 
 ```scala
 def composePP[S, A, B](
@@ -509,19 +512,14 @@ def composePP[S, A, B](
   p2: Prism[A, B]
 ) = new Prism[S, B] {
 
-  override def set(s: S)(b: B) =
-    p1.get(s) match {
-      case Some(a) => p1.set(s)(p2.set(a)(b))
-      case None    => s
-    }
-
+  override def set(b: B) = ???
   override def get(s: S) = ???
 }
 ```
 
 ---
 
-## `Prism` with `Prism`
+## Composing `Prism`s ²
 
 ```scala
 def composePP[S, A, B](
@@ -529,51 +527,23 @@ def composePP[S, A, B](
   p2: Prism[A, B]
 ) = new Prism[S, B] {
 
-  override def set(s: S)(b: B) =
-    p1.get(s) match {
-      case Some(a) => p1.set(s)(p2.set(a)(b))
-      case None    => s
-    }
-
-  override def get(s: S) = for {
-    a <- p1.get(s)
-    b <- p2.get(a)
-  } yield b
+  override def set(b: B) = p1.set(p2.set(b))
+  override def get(s: S) = ???
 }
 ```
 
 ---
 
-## `Prism` with `Lens`
+## Composing `Prism`s ³
 
 ```scala
-def composePL[S, A, B](
-  p: Prism[S, A],
-  l: Lens[A, B]
-) = new Prism[S,  B] {
+def composePP[S, A, B](
+  p1: Prism[S, A],
+  p2: Prism[A, B]
+) = new Prism[S, B] {
 
-  override def set(s: S)(b: B) =
-    p.get(s) match {
-      case Some(a) => p.set(s)(l.set(a)(b))
-      case None    => s
-    }
-
-  override def get(s: S) = p.get(s).map(l.get)
-}
-```
-
----
-
-## `Lens` with `Prism`
-
-```scala
-def composeLP[S, A, B](
-  l: Lens[S, A],
-  p: Prism[A, B]
-) = new Prism[S,  B] {
-
-  override def set(s: S)(b: B) = l.set(s)(p.set(l.get(s))(b))
-  override def get(s: S)       = p.get(l.get(s))
+  override def set(b: B) = p1.set(p2.set(b))
+  override def get(s: S) = p1.get(s).flatMap(p2.get)
 }
 ```
 
@@ -585,11 +555,8 @@ We can now write the prism we needed:
 
 ```scala
 val loginPrism = Prism[Auth, Auth.Login](
-  (_, a) => a,
-  {
-    case s: Auth.Login => Some(s)
-    case _             => None
-  }
+  a => a,
+  { case s: Auth.Login => s }
 )
 ```
 
@@ -601,28 +568,261 @@ We'll also need to go from an `Auth.Login` to its name:
 
 ```scala
 val userNameLens = Lens[Auth.Login, String](
-  (s, a) => s.copy(user = a),
+  (a, s) => s.copy(user = a),
   s      => s.user
-)
-```
-
----
-
-## Using prisms ³
-
-Here's our complete prism:
-
-```scala
-val userName = composePL(
-  composeLP(authLens, loginPrism),
-  userNameLens
 )
 ```
 
 --
 
+But... how do we compose a `loginPrism` and `userNameLens`?
+
+---
+
+## `Prism` + `Lens` = `Prism`?
+
+Can the composition be implemented as a `Prism`?
+
+--
+
 ```scala
-userName.set(service)("psmith")
+def composePL[S, A, B](
+  p: Prism[S, A],
+  l: Lens[A, B]
+) = new Prism[S, B] {
+
+  override def set(b: B) = {
+    val a: A = ???
+    p.set(l.set(b)(a))
+  }
+  override def get(s: S) = ???
+}
+```
+
+It cannot: there's no way to get an `A` in `set`.
+
+---
+
+## `Prism` + `Lens` = `Lens`?
+
+Can the composition be implemented as a `Lens`?
+
+--
+
+```scala
+def composePL[S, A, B](
+  p: Prism[S, A],
+  l: Lens[A, B]
+) = new Lens[S, B] {
+
+  override def set(b: B)(s: S) = ???
+  override def get(s: S)       = p.get(s).map(l.get)
+}
+// <console>:20: error: type mismatch;
+//  found   : Option[B]
+//  required: B
+//          override def get(s: S)       = p.get(s).map(l.get)
+//                                                     ^
+```
+
+It cannot: `get` cannot be implemented (sanely).
+
+---
+
+## `Prism` + `Lens` = `???`
+
+It looks like we'll need a third structure - a hybrid between a `Lens` and a `Prism`.
+
+A `Lens` for something that might not be there...
+
+
+---
+
+## Optional!
+
+```scala
+trait Optional[S, A] {
+  def set(a: A)(s: S): S
+  def get(s: S): Option[A]
+
+  def modify(f: A => A)(s: S): S = get(s) match {
+    case Some(a) => set(f(a))(s)
+    case None    => s
+  }
+}
+```
+
+--
+
+(Yeah, the fancy optics metaphor apparently breaks down at this point)
+
+--
+
+We'll need the usual creation helpers.
+
+---
+
+## Creation helper
+
+```scala
+object Optional {
+  def apply[S, A](
+    setter: (A, S) => S,
+    getter: S => Option[A]
+  ): Optional[S, A] = new Optional[S, A] {
+    override def set(a: A)(s: S) = setter(a, s)
+    override def get(s: S)       = getter(s)
+  }
+}
+```
+
+---
+
+## Compositions galore
+
+The following few slides show the code for all remaining `Lens` / `Prism` / `Optional` compositions.
+
+They're here for the sake of completeness and can safely be skipped.
+
+---
+
+## `Prism` with `Lens`
+
+```scala
+def composePL[S, A, B](
+  p: Prism[S, A],
+  l: Lens[A, B]
+) = new Optional[S, B] {
+
+  override def set(b: B)(s: S) = p.modify(l.set(b))(s)
+  override def get(s: S)       = p.get(s).map(l.get)
+}
+```
+
+
+---
+
+## `Lens` with `Prism`
+
+
+```scala
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = new Optional[S, B] {
+
+  override def set(b: B)(s: S) = l.set(p.set(b))(s)
+  override def get(s: S)       = p.get(l.get(s))
+}
+```
+
+---
+
+## `Optional` with `Optional`
+
+
+```scala
+def composeOO[S, A, B](
+  o1: Optional[S, A],
+  o2: Optional[A, B]
+) = new Optional[S, B] {
+
+  override def set(b: B)(s: S) = o1.modify(o2.set(b))(s)
+  override def get(s: S)       = o1.get(s).flatMap(o2.get)
+}
+```
+
+---
+
+## `Optional` with `Prism`
+
+
+```scala
+def composeOP[S, A, B](
+  o: Optional[S, A],
+  p: Prism[A, B]
+) = new Optional[S, B] {
+
+  override def set(b: B)(s: S) = o.set(p.set(b))(s)
+  override def get(s: S)       = o.get(s).flatMap(p.get)
+}
+```
+
+---
+
+## `Prism` with `Optional`
+
+
+```scala
+def composePO[S, A, B](
+  p: Prism[S, A],
+  o: Optional[A, B]
+) = new Optional[S, B] {
+
+  override def set(b: B)(s: S) = p.modify(o.set(b))(s)
+  override def get(s: S)       = p.get(s).flatMap(o.get)
+}
+```
+
+---
+
+## `Optional` with `Lens`
+
+
+```scala
+def composeOL[S, A, B](
+  o: Optional[S, A],
+  l: Lens[A, B]
+) = new Optional[S, B] {
+
+  override def set(b: B)(s: S) = o.modify(l.set(b))(s)
+  override def get(s: S)       = o.get(s).map(l.get)
+}
+```
+
+---
+
+## `Lens` with `Optional`
+
+
+```scala
+def composeLO[S, A, B](
+  l: Lens[S, A],
+  o: Optional[A, B]
+) = new Optional[S, B] {
+
+  override def set(b: B)(s: S) = l.modify(o.set(b))(s)
+  override def get(s: S)       = o.get(l.get(s))
+}
+```
+
+---
+
+## Compositions galore ²
+
+Done. You can start paying attention again.
+
+---
+
+## Using prisms
+
+Here's our complete prism:
+
+```scala
+val userName = composeOL(
+  composeLP(authLens, loginPrism),
+  userNameLens
+)
+```
+
+---
+
+## Using prisms ²
+
+And this, finally, works as expected:
+
+```scala
+userName.set("psmith")(service)
 // res4: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
@@ -649,7 +849,7 @@ val userName = lens[MlService].auth.user
 
 ## Shapeless ²
 
-The use-site API is the same as ours:
+The use-site API is the almost the same as ours:
 
 ```scala
 serviceName.set(service)("news_20")
@@ -680,7 +880,7 @@ val userName = GenLens[MlService](_.auth).
 
 ## Monocle ²
 
-The use-site API is almost the same as ours:
+The use-site API is the same as ours:
 
 ```scala
 serviceName.set("news_20")(service)
@@ -694,7 +894,7 @@ userName.set("psmith")(service)
 
 ## Monocle ³
 
-[Monocle] offers far more tools than prisms and lenses.
+[Monocle] offers far more tools than lenses, prisms and optionals.
 
 They rely on concepts that are out of scope for this presentation, though.
 
@@ -769,11 +969,8 @@ We'll need a prism on `Section`:
 
 ```scala
 val section = Prism[Config, Config.Section](
-  (_, a) => a,
-  _ match {
-    case a: Config.Section => Some(a)
-    case _                 => None
-  }
+  a => a,
+  { case a: Config.Section => a }
 )
 ```
 
@@ -785,11 +982,8 @@ And one on `Field`:
 
 ```scala
 val field = Prism[Config, Config.Field](
-  (_, a) => a,
-  _ match {
-    case a: Config.Field => Some(a)
-    case _               => None
-  }
+  a => a,
+  { case a: Config.Field => a }
 )
 ```
 
@@ -800,8 +994,8 @@ val field = Prism[Config, Config.Field](
 We'll also need to access a given field of a section:
 
 ```scala
-def sectionChild(name: String) = Prism[Config.Section, Config](
-  (s, a) => Config.Section(s.children + (name -> a)),
+def sectionChild(name: String) = Optional[Config.Section, Config](
+  (a, s) => Config.Section(s.children + (name -> a)),
   _.children.get(name)
 )
 ```
@@ -810,14 +1004,14 @@ def sectionChild(name: String) = Prism[Config.Section, Config](
 ## First attempt
 
 ```scala
-case class ConfigPath(prism: Prism[Config, Config]) {
+case class ConfigPath(current: Optional[Config, Config]) {
 
-  val asField   = composePP(prism, field)
-  val asSection = composePP(prism, section)
+  val asField   = composeOP(current, field)
+  val asSection = composeOP(current, section)
 
   def child(name: String) = ConfigPath(
-    composePP(
-      composePP(prism, section),
+    composeOO(
+      composeOP(current, section),
       sectionChild(name)
     )
   )
@@ -835,7 +1029,7 @@ We need a way to reference the root of the configuration.
 ## Boring optics
 
 ```scala
-val identityPrism = Prism[Config, Config](
+val identityOpt = Optional[Config, Config](
   (_, a) => a,
   Option.apply
 )
@@ -846,7 +1040,7 @@ val identityPrism = Prism[Config, Config](
 Our root element is now:
 
 ```scala
-ConfigPath(identityPrism)
+ConfigPath(identityOpt)
 ```
 
 
@@ -856,7 +1050,7 @@ ConfigPath(identityPrism)
 
 ```scala
 val classifierName =
-  ConfigPath(identityPrism).
+  ConfigPath(identityOpt).
     child("classifier").
     child("name").
     asField
@@ -898,15 +1092,15 @@ Rewriting `ConfigPath` with `Dynamic`:
 
 ```scala
 case class ConfigPath(
-    prism: Prism[Config, Config]
+    current: Optional[Config, Config]
   ) extends Dynamic {
 
-  val asField   = composePP(prism, field)
-  val asSection = composePP(prism, section)
+  val asField   = composeOP(current, field)
+  val asSection = composeOP(current, section)
 
   def selectDynamic(child: String) = ConfigPath(
-    composePP(
-      composePP(prism, section),
+    composeOO(
+      composeOP(current, section),
       sectionChild(child)
     )
   )
@@ -919,7 +1113,7 @@ case class ConfigPath(
 
 ```scala
 val classifierName =
-  ConfigPath(identityPrism).
+  ConfigPath(identityOpt).
     classifier.
     name.
     asField
@@ -927,14 +1121,14 @@ val classifierName =
 
 --
 
-Much better, but this `ConfigPath(identityPrism)` is unpleasant.
+Much better, but this `ConfigPath(identityOpt)` is unpleasant.
 
 ---
 
 ## Final steps
 
 ```scala
-val root = ConfigPath(identityPrism)
+val root = ConfigPath(identityOpt)
 ```
 
 --
@@ -950,8 +1144,8 @@ val classifierName = root.classifier.name.asField
 This behaves as expected:
 
 ```scala
-classifierName.set(conf)(Config.Field("news_20"))
-// res11: Config = Section(Map(auth -> Section(Map(token -> Field(0xCAFEBABE))), classifier -> Section(Map(name -> Field(news_20), classCount -> Field(20)))))
+classifierName.set(Config.Field("news_20"))(conf)
+// res11: Config = Section(Map(auth -> Section(Map(token -> Field(0xCAFEBABE))), classifier -> Section(Map(name -> Field(news20), classCount -> Field(20)))))
 ```
 
 ---
