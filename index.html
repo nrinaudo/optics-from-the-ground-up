@@ -193,7 +193,7 @@ This looks painful to instantiate. Let's give ourselves helpers.
 object Lens {
   def apply[S, A](
     setter: (A, S) => S,
-    getter: S => A
+    getter: S      => A
   ) = new Lens[S, A] {
 
     override def set(a: A)(s: S) = setter(a, s)
@@ -372,6 +372,13 @@ classifierName.modify(_.toUpperCase)(service)
 
 ---
 
+## Conclusions
+
+* Lenses are used to drill down arbitrarily deep in nested product types
+* Deep lenses are created by composing smaller ones together
+
+---
+
 class: center, middle
 
 # Prisms & Optionals
@@ -380,7 +387,7 @@ class: center, middle
 
 ## Motivation
 
-How about changing the user's login?
+We want to change the service's authentication user name.
 
 --
 
@@ -668,8 +675,9 @@ We'll need the usual creation helpers.
 object Optional {
   def apply[S, A](
     setter: (A, S) => S,
-    getter: S => Option[A]
+    getter: S      => Option[A]
   ): Optional[S, A] = new Optional[S, A] {
+
     override def set(a: A)(s: S) = setter(a, s)
     override def get(s: S)       = getter(s)
   }
@@ -828,20 +836,61 @@ userName.set("psmith")(service)
 
 ---
 
+## Conclusions
+
+* Prisms are used to chose a specific value constructor in a sum type
+* Optionals represent "paths" that might not exist
+* Lenses, prisms and optionals all compose
+
+---
+
 class: center, middle
 
 # Libraries
 
 ---
 
+## Scalaz
+
+[scalaz] has lenses:
+
+```scala
+import scalaz.Lens.lensu
+
+val classifierLens = lensu[MlService, Classifier](
+  (s, a) => s.copy(classifier = a),
+  _.classifier
+)
+
+val nameLens = lensu[Classifier, String](
+  (s, a) => s.copy(name = a),
+  _.name
+)
+
+val classifierName = classifierLens andThen nameLens
+```
+
+---
+
+## Scalaz ²
+
+The use-site API is similar to ours:
+
+```scala
+classifierName.set(service, "news_20")
+// res5: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
+```
+
+---
+
 ## Shapeless
 
-[shapeless] has optics tools:
+[shapeless] has lenses and prisms (but sort of conflates prisms and optionals):
 
 ```scala
 import shapeless.lens
 
-val serviceName = lens[MlService].classifier.name
+val classifierName = lens[MlService].classifier.name
 
 val userName = lens[MlService].auth.user
 ```
@@ -849,14 +898,14 @@ val userName = lens[MlService].auth.user
 
 ## Shapeless ²
 
-The use-site API is the almost the same as ours:
+The use-site API is almost the same as ours:
 
 ```scala
-serviceName.set(service)("news_20")
-// res5: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
+classifierName.set(service)("news_20")
+// res6: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
 
 userName.set(service)("psmith")
-// res6: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
+// res7: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
 ---
@@ -868,7 +917,7 @@ userName.set(service)("psmith")
 ```scala
 import monocle.macros._
 
-val serviceName = GenLens[MlService](_.classifier).
+val classifierName = GenLens[MlService](_.classifier).
   composeLens(GenLens[Classifier](_.name))
 
 val userName = GenLens[MlService](_.auth).
@@ -883,11 +932,11 @@ val userName = GenLens[MlService](_.auth).
 The use-site API is the same as ours:
 
 ```scala
-serviceName.set("news_20")(service)
-// res7: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
+classifierName.set("news_20")(service)
+// res8: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
 
 userName.set("psmith")(service)
-// res8: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
+// res9: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
 ---
@@ -897,6 +946,13 @@ userName.set("psmith")(service)
 [Monocle] offers far more tools than lenses, prisms and optionals.
 
 They rely on concepts that are out of scope for this presentation, though.
+
+---
+
+## Conclusions
+
+* Optics are popular enough to warrant at least 3 different popular implementations
+* Should you need optics, your best choice is probably [Monocle]
 
 ---
 
@@ -1080,7 +1136,7 @@ Referencing unknown members is equivalent to applying `selectDynamic`:
 
 ```scala
 UpCase.bar
-// res10: String = BAR
+// res11: String = BAR
 ```
 
 ---
@@ -1145,8 +1201,15 @@ This behaves as expected:
 
 ```scala
 classifierName.set(Config.Field("news_20"))(conf)
-// res11: Config = Section(Map(auth -> Section(Map(token -> Field(0xCAFEBABE))), classifier -> Section(Map(name -> Field(news20), classCount -> Field(20)))))
+// res12: Config = Section(Map(auth -> Section(Map(token -> Field(0xCAFEBABE))), classifier -> Section(Map(name -> Field(news20), classCount -> Field(20)))))
 ```
+
+---
+
+## Conclusions
+
+* Optics can be used for more than just exploring ADTs
+* [circe] has a realy nice example with [`JsonPath`]
 
 ---
 
@@ -1158,7 +1221,7 @@ class: center, middle
 
 ## Conclusions
 
-* Optics let you easily work with arbitrary deep ADTs
+* Optics are a great tool for working with nested data
 * You do not need to understand the underlying theory to use them
 * Existing libraries such as [shapeless] and [Monocle] make creating them (almost) painless
 
@@ -1180,12 +1243,15 @@ class: center, middle
 
 # Thanks!
 
+[scalaz]:https://scalaz.github.io/7/
 [shapeless]:https://github.com/milessabin/shapeless
 [Monocle]:https://github.com/julien-truffaut/Monocle
 [remark.js]:https://remarkjs.com
 [tut]:https://github.com/tpolecat/tut
 [Besedo]:https://twitter.com/besedo_official
 [@NicolasRinaudo]:https://twitter.com/NicolasRinaudo
+[circe]:https://circe.github.io/circe/
+[`JsonPath`]:https://circe.github.io/circe/optics.html
 
     </textarea>
     <script src="js/remark.js" type="text/javascript">
