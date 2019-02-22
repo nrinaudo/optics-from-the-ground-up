@@ -97,7 +97,7 @@ We want to change the classifier name to `news_20`.
 
 ---
 
-## Motivation ²
+## Motivation .super[2]
 
 Easy in an imperative language:
 
@@ -212,7 +212,7 @@ type Get[S, A] = S => A
 ```
 
 ---
-## Creation helper ²
+## Creation helper .super[2]
 
 ```tut:silent
 object Lens {
@@ -255,7 +255,7 @@ Aside : these sure look like they could be automatically generated...
 
 ---
 
-## Using lenses ²
+## Using lenses .super[2]
 
 ```tut:book
 classifierLens.modify(nameLens.set("news_20"))(service)
@@ -357,7 +357,7 @@ val classifierName = composeLL(
 
 ---
 
-## Composing lenses ²
+## Composing lenses .super[2]
 
 And this works as expected:
 
@@ -399,7 +399,7 @@ val authLens = Lens[MlService, Auth](
 
 ---
 
-## Motivation ²
+## Motivation .super[2]
 
 We'll also need one on the `user` field of `Auth`:
 
@@ -449,7 +449,7 @@ We'll also need to turn a value back into the original type.
 
 ---
 
-## Prism ²
+## Prism .super[2]
 
 
 ```tut:silent
@@ -465,7 +465,7 @@ Given `get` and `set`, we should be able to implement `modify`.
 
 ---
 
-## Prism ³
+## Prism .super[3]
 
 ```tut:silent
 trait Prism[S, A] {
@@ -523,7 +523,7 @@ def composePP[S, A, B](
 
 ---
 
-## Composing `Prism`s ²
+## Composing `Prism`s .super[2]
 
 ```tut:silent
 def composePP[S, A, B](
@@ -538,7 +538,7 @@ def composePP[S, A, B](
 
 ---
 
-## Composing `Prism`s ³
+## Composing `Prism`s .super[3]
 
 ```tut:silent
 def composePP[S, A, B](
@@ -566,7 +566,7 @@ val loginPrism = Prism[Auth, Auth.Login](
 
 ---
 
-## Using prisms ²
+## Using prisms .super[2]
 
 We'll also need to go from an `Auth.Login` to its name:
 
@@ -798,7 +798,7 @@ def composeLO[S, A, B](
 
 ---
 
-## Compositions galore ²
+## Compositions galore .super[2]
 
 Done. You can start paying attention again.
 
@@ -817,7 +817,7 @@ val userName = composeOL(
 
 ---
 
-## Using prisms ²
+## Using prisms .super[2]
 
 And this, finally, works as expected:
 
@@ -863,7 +863,7 @@ val classifierName = classifierLens andThen nameLens
 
 ---
 
-## Scalaz ²
+## Scalaz .super[2]
 
 The use-site API is similar to ours:
 
@@ -886,7 +886,7 @@ val userName = lens[MlService].auth.user
 ```
 ---
 
-## Shapeless ²
+## Shapeless .super[2]
 
 The use-site API is almost the same as ours:
 
@@ -914,7 +914,7 @@ val userName = GenLens[MlService](_.auth).
 
 ---
 
-## Monocle ²
+## Monocle .super[2]
 
 The use-site API is the same as ours:
 
@@ -925,7 +925,7 @@ userName.set("psmith")(service)
 
 ---
 
-## Monocle ³
+## Monocle .super[3]
 
 [Monocle] offers far more tools than lenses, prisms and optionals.
 
@@ -979,7 +979,7 @@ For example:
 
 ---
 
-## MlService configuration ²
+## MlService configuration .super[2]
 
 For example:
 
@@ -1016,7 +1016,7 @@ val section = Prism[Config, Config.Section](
 
 ---
 
-## Obvious optics ²
+## Obvious optics .super[2]
 
 And one on `Field`:
 
