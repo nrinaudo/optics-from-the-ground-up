@@ -1086,7 +1086,7 @@ We need a way to reference the root of the configuration.
 
 ```scala
 val identityOpt = Optional[Config, Config](
-  (_, a) => a,
+  (a, _) => a,
   Option.apply
 )
 ```
@@ -1201,7 +1201,7 @@ This behaves as expected:
 
 ```scala
 classifierName.set(Config.Field("news_20"))(conf)
-// res12: Config = Section(Map(auth -> Section(Map(token -> Field(0xCAFEBABE))), classifier -> Section(Map(name -> Field(news20), classCount -> Field(20)))))
+// res12: Config = Section(Map(auth -> Section(Map(token -> Field(0xCAFEBABE))), classifier -> Section(Map(name -> Field(news_20), classCount -> Field(20)))))
 ```
 
 ---
