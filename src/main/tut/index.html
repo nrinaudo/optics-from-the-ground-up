@@ -1004,7 +1004,7 @@ case class ConfigPath(current: Optional[Config, Config]) {
 
   def child(name: String) = ConfigPath(
     composeOO(
-      composeOP(current, section),
+      asSection,
       sectionChild(name)
     )
   )
@@ -1092,7 +1092,7 @@ case class ConfigPath(
 
   def selectDynamic(child: String) = ConfigPath(
     composeOO(
-      composeOP(current, section),
+      asSection,
       sectionChild(child)
     )
   )
