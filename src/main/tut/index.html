@@ -439,38 +439,8 @@ A way to separate `Auth` into its constituent types...
 
 ```tut:silent
 trait Prism[S, A] {
-  def get(s: S): Option[A]
-}
-```
-
---
-
-We'll also need to turn a value back into the original type.
-
----
-
-## Prism .super[2]
-
-
-```tut:silent
-trait Prism[S, A] {
-  def get(s: S): Option[A]
   def set(a: A): S
-}
-```
-
---
-
-Given `get` and `set`, we should be able to implement `modify`.
-
----
-
-## Prism .super[3]
-
-```tut:silent
-trait Prism[S, A] {
   def get(s: S): Option[A]
-  def set(a: A): S
 
   def modify(f: A => A)(s: S): S = get(s) match {
     case Some(a) => set(f(a))
@@ -481,7 +451,7 @@ trait Prism[S, A] {
 
 --
 
-Lastly, we're going to need simple ways of creating `Prism` values.
+We're going to need simple ways of creating `Prism` values.
 
 ---
 
@@ -575,7 +545,7 @@ def composePL[S, A, B](
 )
 ```
 
-It cannot: there's no way to get an `A` in `set`.
+It cannot: there's no way to get an `A` in the setter.
 
 ---
 
@@ -918,7 +888,7 @@ They rely on concepts that are out of scope for this presentation, though.
 
 ## Conclusions
 
-* Optics are popular enough to warrant at least 3 different popular implementations
+* Optics are useful enough to warrant at least 3 different popular implementations
 * Should you need optics, your best choice is probably [Monocle]
 
 ---
@@ -1173,7 +1143,7 @@ classifierName.set(Config.Field("news_20"))(conf)
 
 ## Conclusions
 
-* Optics can be used for more than just exploring ADTs
+* Optics can be used for more than just exploring "simple" ADTs
 * [circe] has a realy nice example with [`JsonPath`]
 
 ---
