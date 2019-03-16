@@ -492,13 +492,35 @@ Lastly, we're going to need simple ways of creating `Prism` values.
 object Prism {
   def apply[S, A](
     setter: A => S,
-    getter: PartialFunction[S, A]
-  ): Prism[S, A] = new Prism[S, A] {
-    val lifted = getter.lift
-
+    getter: S => Option[A]
+  ) = new Prism[S, A] {
     override def set(a: A) = setter(a)
-    override def get(s: S) = lifted(s)
+    override def get(s: S) = getter(s)
   }
+}
+```
+
+--
+
+We can make this more user friendly by supporting partial functions.
+
+---
+
+## Creation helper .super[2]
+```tut:silent
+object Prism {
+  def apply[S, A](
+    setter: A => S,
+    getter: S => Option[A]
+  ) = new Prism[S, A] {
+    override def set(a: A) = setter(a)
+    override def get(s: S) = getter(s)
+  }
+
+  def fromPartial[S, A](
+    setter: A => S,
+    getter: PartialFunction[S, A]
+  ) = Prism[S, A](setter, getter.lift)
 }
 ```
 
@@ -509,7 +531,7 @@ object Prism {
 We can now write the prism we needed:
 
 ```tut:silent
-val loginPrism = Prism[Auth, Auth.Login](
+val loginPrism = Prism.fromPartial[Auth, Auth.Login](
   a => a,
   { case s: Auth.Login => s }
 )
@@ -544,14 +566,13 @@ Can the composition be implemented as a `Prism`?
 def composePL[S, A, B](
   p: Prism[S, A],
   l: Lens[A, B]
-) = new Prism[S, B] {
-
-  override def set(b: B) = {
+) = Prism[S, B](
+  b => {
     val a: A = ???
     p.set(l.set(b)(a))
-  }
-  override def get(s: S) = ???
-}
+  },
+  s => ???
+)
 ```
 
 It cannot: there's no way to get an `A` in `set`.
@@ -568,11 +589,10 @@ Can the composition be implemented as a `Lens`?
 def composePL[S, A, B](
   p: Prism[S, A],
   l: Lens[A, B]
-) = new Lens[S, B] {
-
-  override def set(b: B)(s: S) = ???
-  override def get(s: S)       = p.get(s).map(l.get)
-}
+) = Lens[S, B](
+  (b, s) => ???,
+  s      => p.get(s).map(l.get)
+)
 ```
 
 It cannot: `get` cannot be implemented (sanely).
@@ -619,13 +639,17 @@ object Optional {
   def apply[S, A](
     setter: (A, S) => S,
     getter: S      => Option[A]
-  ): Optional[S, A] = new Optional[S, A] {
+  ) = new Optional[S, A] {
 
     override def set(a: A)(s: S) = setter(a, s)
     override def get(s: S)       = getter(s)
   }
 }
 ```
+
+???
+
+`fromPartial` is not defined because we don't need it in these slides.
 
 ---
 
@@ -644,11 +668,10 @@ They're here for the sake of completeness and can safely be skipped.
 def composePP[S, A, B](
   p1: Prism[S, A],
   p2: Prism[A, B]
-) = new Prism[S, B] {
-
-  override def set(b: B) = p1.set(p2.set(b))
-  override def get(s: S) = p1.get(s).flatMap(p2.get)
-}
+) = Prism[S, B](
+  b => p1.set(p2.set(b)),
+  s => p1.get(s).flatMap(p2.get)
+)
 ```
 
 ---
@@ -659,11 +682,10 @@ def composePP[S, A, B](
 def composePL[S, A, B](
   p: Prism[S, A],
   l: Lens[A, B]
-) = new Optional[S, B] {
-
-  override def set(b: B)(s: S) = p.modify(l.set(b))(s)
-  override def get(s: S)       = p.get(s).map(l.get)
-}
+) = Optional[S, B](
+  (b, s) => p.modify(l.set(b))(s),
+  s      => p.get(s).map(l.get)
+)
 ```
 
 
@@ -676,11 +698,10 @@ def composePL[S, A, B](
 def composeLP[S, A, B](
   l: Lens[S, A],
   p: Prism[A, B]
-) = new Optional[S, B] {
-
-  override def set(b: B)(s: S) = l.set(p.set(b))(s)
-  override def get(s: S)       = p.get(l.get(s))
-}
+) = Optional[S, B](
+  (b, s) => l.set(p.set(b))(s),
+  s      => p.get(l.get(s))
+)
 ```
 
 ---
@@ -692,11 +713,10 @@ def composeLP[S, A, B](
 def composeOO[S, A, B](
   o1: Optional[S, A],
   o2: Optional[A, B]
-) = new Optional[S, B] {
-
-  override def set(b: B)(s: S) = o1.modify(o2.set(b))(s)
-  override def get(s: S)       = o1.get(s).flatMap(o2.get)
-}
+) = Optional[S, B](
+  (b, s) => o1.modify(o2.set(b))(s),
+  s      => o1.get(s).flatMap(o2.get)
+)
 ```
 
 ---
@@ -708,11 +728,10 @@ def composeOO[S, A, B](
 def composeOP[S, A, B](
   o: Optional[S, A],
   p: Prism[A, B]
-) = new Optional[S, B] {
-
-  override def set(b: B)(s: S) = o.set(p.set(b))(s)
-  override def get(s: S)       = o.get(s).flatMap(p.get)
-}
+) = Optional[S, B](
+  (b, s) => o.set(p.set(b))(s),
+  s      => o.get(s).flatMap(p.get)
+)
 ```
 
 ---
@@ -724,11 +743,10 @@ def composeOP[S, A, B](
 def composePO[S, A, B](
   p: Prism[S, A],
   o: Optional[A, B]
-) = new Optional[S, B] {
-
-  override def set(b: B)(s: S) = p.modify(o.set(b))(s)
-  override def get(s: S)       = p.get(s).flatMap(o.get)
-}
+) = Optional[S, B](
+  (b, s) => p.modify(o.set(b))(s),
+  s      => p.get(s).flatMap(o.get)
+)
 ```
 
 ---
@@ -740,11 +758,10 @@ def composePO[S, A, B](
 def composeOL[S, A, B](
   o: Optional[S, A],
   l: Lens[A, B]
-) = new Optional[S, B] {
-
-  override def set(b: B)(s: S) = o.modify(l.set(b))(s)
-  override def get(s: S)       = o.get(s).map(l.get)
-}
+) = Optional[S, B](
+  (b, s) => o.modify(l.set(b))(s),
+  s      => o.get(s).map(l.get)
+)
 ```
 
 ---
@@ -756,11 +773,10 @@ def composeOL[S, A, B](
 def composeLO[S, A, B](
   l: Lens[S, A],
   o: Optional[A, B]
-) = new Optional[S, B] {
-
-  override def set(b: B)(s: S) = l.modify(o.set(b))(s)
-  override def get(s: S)       = o.get(l.get(s))
-}
+) = Optional[S, B](
+  (b, s) => l.modify(o.set(b))(s),
+  s      => o.get(l.get(s))
+)
 ```
 
 ---
@@ -975,7 +991,7 @@ Optics are one possible good solution.
 We'll need a prism on `Section`:
 
 ```tut:silent
-val section = Prism[Config, Config.Section](
+val section = Prism.fromPartial[Config, Config.Section](
   a => a,
   { case a: Config.Section => a }
 )
@@ -988,7 +1004,7 @@ val section = Prism[Config, Config.Section](
 And one on `Field`:
 
 ```tut:silent
-val field = Prism[Config, Config.Field](
+val field = Prism.fromPartial[Config, Config.Field](
   a => a,
   { case a: Config.Field => a }
 )
