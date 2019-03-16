@@ -68,7 +68,7 @@ object Auth {
 Compositions of sum and product types:
 
 ```tut:silent
-final case class MlService(
+case class MlService(
   auth      : Auth,
   classifier: Classifier
 )
@@ -502,55 +502,6 @@ object Prism {
 }
 ```
 
---
-
-We've been down this road before. We know we'll want to compose.
-
----
-
-## Composing `Prism`s
-
-```tut:silent
-def composePP[S, A, B](
-  p1: Prism[S, A],
-  p2: Prism[A, B]
-) = new Prism[S, B] {
-
-  override def set(b: B) = ???
-  override def get(s: S) = ???
-}
-```
-
----
-
-## Composing `Prism`s .super[2]
-
-```tut:silent
-def composePP[S, A, B](
-  p1: Prism[S, A],
-  p2: Prism[A, B]
-) = new Prism[S, B] {
-
-  override def set(b: B) = p1.set(p2.set(b))
-  override def get(s: S) = ???
-}
-```
-
----
-
-## Composing `Prism`s .super[3]
-
-```tut:silent
-def composePP[S, A, B](
-  p1: Prism[S, A],
-  p2: Prism[A, B]
-) = new Prism[S, B] {
-
-  override def set(b: B) = p1.set(p2.set(b))
-  override def get(s: S) = p1.get(s).flatMap(p2.get)
-}
-```
-
 ---
 
 ## Using prisms
@@ -683,6 +634,22 @@ object Optional {
 The following few slides show the code for all remaining `Lens` / `Prism` / `Optional` compositions.
 
 They're here for the sake of completeness and can safely be skipped.
+
+---
+
+
+## `Prism` with `Prism`
+
+```tut:silent
+def composePP[S, A, B](
+  p1: Prism[S, A],
+  p2: Prism[A, B]
+) = new Prism[S, B] {
+
+  override def set(b: B) = p1.set(p2.set(b))
+  override def get(s: S) = p1.get(s).flatMap(p2.get)
+}
+```
 
 ---
 
