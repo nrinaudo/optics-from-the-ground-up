@@ -833,12 +833,12 @@ import scalaz.Lens.lensu
 
 val classifierLens = lensu[MlService, Classifier](
   (s, a) => s.copy(classifier = a),
-  _.classifier
+  s      => s.classifier
 )
 
 val nameLens = lensu[Classifier, String](
   (s, a) => s.copy(name = a),
-  _.name
+  s      => s.name
 )
 
 val classifierName = classifierLens andThen nameLens
