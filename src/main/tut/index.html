@@ -490,7 +490,7 @@ object Prism {
   def fromPartial[S, A](
     setter: A => S,
     getter: PartialFunction[S, A]
-  ) = Prism[S, A](setter, getter.lift)
+  ) = Prism(setter, getter.lift)
 }
 ```
 
