@@ -7,3 +7,5 @@ The purpose of this talk is not to make anyone an optics expert, but to demystif
 Attendants would ideally be able to read idiomatic Scala code and know what an ADT is.
 
 Slides can be consulted directly on the [companion site](https://nrinaudo.github.io/optics-from-the-ground-up/).
+
+You can also view a recording of this talk at the [Paris Scala User Group](https://www.youtube.com/watch?v=553LqpTmeRE) (FR).
