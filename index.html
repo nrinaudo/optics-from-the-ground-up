@@ -870,8 +870,7 @@ userName.set(service)("psmith")
 ```scala
 import monocle.macros._
 
-val classifierName = GenLens[MlService](_.classifier).
-  composeLens(GenLens[Classifier](_.name))
+val classifierName = GenLens[MlService](_.classifier.name)
 
 val userName = GenLens[MlService](_.auth).
   composePrism(GenPrism[Auth, Auth.Login]).
@@ -1212,7 +1211,7 @@ class: center, middle
     </script>
     <script type="text/javascript">
         var slideshow = remark.create({
-        highlightStyle: 'solarized-dark'
+        highlightStyle: 'github'
       });
     </script>
   </body>
