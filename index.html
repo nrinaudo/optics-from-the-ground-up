@@ -276,7 +276,7 @@ def setName(
     l1: Lens[MlService, Classifier],
     l2: Lens[Classifier, String]
   )
-  (b: String)(s: MlService): MlService =
+  (b: String, s: MlService): MlService =
     l1.modify(l2.set(b))(s)
 ```
 
@@ -293,7 +293,7 @@ def setName[S, A, B](
     l1: Lens[S, A],
     l2: Lens[A, B]
   )
-  (b: B)(s: S): S =
+  (b: B, s: S): S =
     l1.modify(l2.set(b))(s)
 ```
 
@@ -791,7 +791,7 @@ userName.set("psmith")(service)
 
 ## Conclusions
 
-* Prisms are used to chose a specific value constructor in a sum type
+* Prisms are used to choose a specific value constructor in a sum type
 * Optionals represent "paths" that might not exist
 * Lenses, prisms and optionals all compose
 
