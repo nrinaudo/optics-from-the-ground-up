@@ -782,7 +782,7 @@ userName.set("psmith")(service)
 
 ## Conclusions
 
-* Prisms are used to chose a specific value constructor in a sum type
+* Prisms are used to choose a specific value constructor in a sum type
 * Optionals represent "paths" that might not exist
 * Lenses, prisms and optionals all compose
 
@@ -857,8 +857,7 @@ userName.set(service)("psmith")
 ```tut:silent
 import monocle.macros._
 
-val classifierName = GenLens[MlService](_.classifier).
-  composeLens(GenLens[Classifier](_.name))
+val classifierName = GenLens[MlService](_.classifier.name)
 
 val userName = GenLens[MlService](_.auth).
   composePrism(GenPrism[Auth, Auth.Login]).
@@ -1194,7 +1193,7 @@ class: center, middle
     </script>
     <script type="text/javascript">
         var slideshow = remark.create({
-        highlightStyle: 'solarized-dark'
+        highlightStyle: 'github'
       });
     </script>
   </body>
