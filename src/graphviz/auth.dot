@@ -1,0 +1,16 @@
+digraph {
+    bgcolor=transparent
+    node[shape="rectangle" style="rounded,filled" color="#2980B9" fontname="Segoe UI,Roboto,Helvetica,Arial,sans-serif" fillcolor="#ffffff" fontcolor="#000000"]
+    edge [color="#2980B9" fontcolor="#000000"]
+
+    // sum types
+    auth[shape=invtrapezium, style=filled fillcolor="#b2ebf2"]
+
+    auth[label=Auth]
+
+    login[label=Login]
+    token[label=Token]
+
+    auth -> token[style=dashed]
+    auth -> login[style=dashed]
+}
