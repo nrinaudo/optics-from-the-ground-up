@@ -93,3 +93,7 @@ blockquote p {
 .hljs-comment {
     font-size: .85em;
 }
+
+.remark-slide-number {
+    display: none;
+}
