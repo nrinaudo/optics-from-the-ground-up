@@ -2224,7 +2224,7 @@ val login: Option[Login] = serviceLogin.get(`service`)
 ```scala
 trait Optional[S, A] {
   def set(a: A)(s: S): S
-  def get(s: S): Option[`A`]
+  def get(s: S): `Option[A]`
 
   def modify(f: A => A)(s: S): S = get(s) match {
     case Some(a) => set(f(a))(s)
