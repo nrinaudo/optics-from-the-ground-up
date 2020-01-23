@@ -2596,10 +2596,93 @@ We can use optics to work with something other than ADTs
 ```scala
 sealed trait Config
 
-object Config {
-  case class Section(children: Map[String, Config]) extends Config
-  case class Field(value: String) extends Config
-}
+case class Section(
+  children: Map[String, Config]
+) extends Config
+
+case class Field(
+  value: String
+) extends Config
+```
+
+---
+
+## Configuration ADT
+
+```scala
+*sealed trait Config
+
+case class Section(
+  children: Map[String, Config]
+) extends Config
+
+case class Field(
+  value: String
+) extends Config
+```
+
+---
+
+## Configuration ADT
+
+```scala
+sealed trait Config
+
+*case class Section(
+* children: Map[String, Config]
+*) extends Config
+
+case class Field(
+  value: String
+) extends Config
+```
+
+---
+
+## Configuration ADT
+
+```scala
+sealed trait Config
+
+case class Section(
+  `children: Map[String, Config]`
+) extends Config
+
+case class Field(
+  value: String
+) extends Config
+```
+
+---
+
+## Configuration ADT
+
+```scala
+sealed trait Config
+
+case class Section(
+  children: Map[String, Config]
+) extends Config
+
+*case class Field(
+* value: String
+*) extends Config
+```
+
+---
+
+## Configuration ADT
+
+```scala
+sealed trait Config
+
+case class Section(
+  children: Map[String, Config]
+) extends Config
+
+case class Field(
+  `value: String`
+) extends Config
 ```
 
 ???
@@ -2628,13 +2711,13 @@ This could be used to store configuration expressed in a JSON-like format
 ## Configuration ADT
 
 ```scala
-val conf = Config.Section(Map(
-  "auth" -> Config.Section(Map(
-    "token" -> Config.Field("0xCAFEBABE")
+val conf = Section(Map(
+  "auth" -> Section(Map(
+    "token" -> Field("0xCAFEBABE")
   )),
-  "classifier" -> Config.Section(Map(
-    "name"       -> Config.Field("news20"),
-    "classCount" -> Config.Field("20")
+  "classifier" -> Section(Map(
+    "name"       -> Field("news20"),
+    "classCount" -> Field("20")
   ))
 ))
 ```
@@ -2650,14 +2733,14 @@ Optics are one possible good solution.
 ## Configuration optics
 
 ```scala
-val section = Prism.fromPartial[Config, Config.Section](
+val section = Prism.fromPartial[Config, Section](
   setter = a => a,
-  getter = { case a: Config.Section => a }
+  getter = { case a: Section => a }
 )
 
-val field = Prism.fromPartial[Config, Config.Field](
+val field = Prism.fromPartial[Config, Field](
   setter = a => a,
-  getter = { case a: Config.Field => a }
+  getter = { case a: Field => a }
 )
 ```
 
@@ -2666,9 +2749,73 @@ val field = Prism.fromPartial[Config, Config.Field](
 ## Configuration optics
 
 ```scala
-def sectionChild(name: String) = Optional[Config.Section, Config](
-  setter = (a, s) => Config.Section(s.children + (name -> a)),
-  getter = _.children.get(name)
+val section = `Prism`.fromPartial`[Config, Section]`(
+  setter = a => a,
+  getter = { case a: Section => a }
+)
+
+val field = Prism.fromPartial[Config, Field](
+  setter = a => a,
+  getter = { case a: Field => a }
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+val section = Prism.fromPartial[Config, Section](
+  setter = a => a,
+  getter = { case a: Section => a }
+)
+
+val field = `Prism`.fromPartial`[Config, Field]`(
+  setter = a => a,
+  getter = { case a: Field => a }
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+def sectionChild(name: String) = Optional[Section, Config](
+  setter = (a, s) => Section(s.children + (name -> a)),
+  getter = s      => s.children.get(name)
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+def sectionChild(name: String) = `Optional[Section, Config]`(
+  setter = (a, s) => Section(s.children + (name -> a)),
+  getter = s      => s.children.get(name)
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+def sectionChild(name: String) = Optional[Section, Config](
+  setter = `(a, s) => Section(s.children + (name -> a))`,
+  getter = s      => s.children.get(name)
+)
+```
+---
+
+## Configuration optics
+
+```scala
+def sectionChild(name: String) = Optional[Section, Config](
+  setter = (a, s) => Section(s.children + (name -> a))`
+  getter = `s      => s.children.get(name)`
 )
 ```
 
@@ -2691,6 +2838,82 @@ case class ConfigPath(current: Optional[Config, Config]) {
 }
 ```
 
+---
+
+## ConfigPath
+
+```scala
+case class ConfigPath(`current: Optional[Config, Config]`) {
+
+  val asField   = composeOP(current, field)
+  val asSection = composeOP(current, section)
+
+  def child(name: String) = ConfigPath(
+    composeOO(
+      asSection,
+      sectionChild(name)
+    )
+  )
+}
+```
+
+---
+
+## ConfigPath
+
+```scala
+case class ConfigPath(current: Optional[Config, Config]) {
+
+  `val asField   = composeOP(current, field)`
+  val asSection = composeOP(current, section)
+
+  def child(name: String) = ConfigPath(
+    composeOO(
+      asSection,
+      sectionChild(name)
+    )
+  )
+}
+```
+
+---
+
+## ConfigPath
+
+```scala
+case class ConfigPath(current: Optional[Config, Config]) {
+
+  val asField   = composeOP(current, field)
+  `val asSection = composeOP(current, section)`
+
+  def child(name: String) = ConfigPath(
+    composeOO(
+      asSection,
+      sectionChild(name)
+    )
+  )
+}
+```
+
+---
+
+## ConfigPath
+
+```scala
+case class ConfigPath(current: Optional[Config, Config]) {
+
+  val asField   = composeOP(current, field)
+  val asSection = composeOP(current, section)
+
+* def child(name: String) = ConfigPath(
+*   composeOO(
+*     asSection,
+*     sectionChild(name)
+*   )
+* )
+}
+```
+
 ???
 
 `ConfigPath` can be thought of as a cursor on a position in the configuration.
@@ -2705,11 +2928,53 @@ But how do we refer to the root of our tree?
 ```scala
 val identityOpt = Optional[Config, Config](
   setter = (a, _) => a,
-  getter = Option.apply
+  getter = s      => Some(s)
 )
 ```
 
---
+---
+
+## ConfigPath
+
+```scala
+val identityOpt = `Optional[Config, Config]`(
+  setter = (a, _) => a,
+  getter = s      => Some(s)
+)
+```
+
+---
+
+## ConfigPath
+
+```scala
+val identityOpt = Optional[Config, Config](
+  setter = `(a, _) => a`,
+  getter = s      => Some(s)
+)
+```
+
+---
+
+## ConfigPath
+
+```scala
+val identityOpt = Optional[Config, Config](
+  setter = (a, _) => a,
+  getter = `s      => Some(s)`
+)
+```
+
+---
+
+## ConfigPath
+
+```scala
+val identityOpt = Optional[Config, Config](
+  setter = (a, _) => a,
+  getter = s      => Some(s)
+)
+```
 
 ```scala
 ConfigPath(identityOpt)
@@ -2724,12 +2989,73 @@ We can now write an entire path
 ## ConfigPath
 
 ```scala
-val classifierName =
+val classifierName: Optional[Config, Field] =
   ConfigPath(identityOpt).
     child("classifier").
     child("name").
     asField
 ```
+
+---
+
+## ConfigPath
+
+```scala
+val classifierName: `Optional[Config, Field]` =
+  ConfigPath(identityOpt).
+    child("classifier").
+    child("name").
+    asField
+```
+
+---
+
+## ConfigPath
+
+```scala
+val classifierName: Optional[Config, Field] =
+  `ConfigPath(identityOpt)`.
+    child("classifier").
+    child("name").
+    asField
+```
+
+---
+
+## ConfigPath
+
+```scala
+val classifierName: Optional[Config, Field] =
+  ConfigPath(identityOpt).
+    `child("classifier")`.
+    child("name").
+    asField
+```
+
+---
+
+## ConfigPath
+
+```scala
+val classifierName: Optional[Config, Field] =
+  ConfigPath(identityOpt).
+    child("classifier").
+    `child("name")`.
+    asField
+```
+
+---
+
+## ConfigPath
+
+```scala
+val classifierName: Optional[Config, Field] =
+  ConfigPath(identityOpt).
+    child("classifier").
+    child("name").
+    `asField`
+```
+
 
 ???
 
@@ -2743,20 +3069,86 @@ This works, but it's not exactly comfortable.
 import scala.language.dynamics
 
 object UpCase extends Dynamic {
-  def selectDynamic(s: String): String = s.toUpperCase
+  def selectDynamic(missingMember: String): String =
+    missingMember.toUpperCase
 }
 ```
 
-???
-Referencing unknown members is equivalent to applying `selectDynamic`:
+---
 
---
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase extends `Dynamic` {
+  def selectDynamic(missingMember: String): String =
+    missingMember.toUpperCase
+}
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase extends Dynamic {
+  def selectDynamic(`missingMember: String`): String =
+    missingMember.toUpperCase
+}
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase extends Dynamic {
+  `def selectDynamic(missingMember: String): String` =
+    missingMember.toUpperCase
+}
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase extends Dynamic {
+  def selectDynamic(missingMember: String): String =
+    `missingMember.toUpperCase`
+}
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase extends Dynamic {
+  def selectDynamic(missingMember: String): String =
+    missingMember.toUpperCase
+}
+```
+
 ```scala
 UpCase.bar
 // res11: String = BAR
 ```
 
+???
+Referencing unknown members is equivalent to applying `selectDynamic`:
+
 ---
+
 ## Dynamic ConfigPath
 
 ```scala
@@ -2781,8 +3173,62 @@ case class ConfigPath(
 ## Dynamic ConfigPath
 
 ```scala
+case class ConfigPath(
+    current: Optional[Config, Config]
+  ) `extends Dynamic` {
+
+  val asField   = composeOP(current, field)
+  val asSection = composeOP(current, section)
+
+  def selectDynamic(child: String) = ConfigPath(
+    composeOO(
+      asSection,
+      sectionChild(child)
+    )
+  )
+}
+```
+
+---
+
+## Dynamic ConfigPath
+
+```scala
+case class ConfigPath(
+    current: Optional[Config, Config]
+  ) extends Dynamic {
+
+  val asField   = composeOP(current, field)
+  val asSection = composeOP(current, section)
+
+  `def selectDynamic(child: String)` = ConfigPath(
+    composeOO(
+      asSection,
+      sectionChild(child)
+    )
+  )
+}
+```
+
+---
+
+## Dynamic ConfigPath
+
+```scala
 val classifierName =
   ConfigPath(identityOpt).
+    classifier.
+    name.
+    asField
+```
+
+---
+
+## Dynamic ConfigPath
+
+```scala
+val classifierName =
+  `ConfigPath(identityOpt)`.
     classifier.
     name.
     asField
@@ -2807,8 +3253,8 @@ val classifierName = root.classifier.name.asField
 
 --
 ```scala
-classifierName.set(Config.Field("news_20"))(conf)
-// res12: Config = Section(Map(auth -> Section(Map(token -> Field(0xCAFEBABE))), classifier -> Section(Map(name -> Field(news_20), classCount -> Field(20)))))
+classifierName.set(Field("NEWS20"))(conf)
+// res12: Config = Section(Map(auth -> Section(Map(token -> Field(0xCAFEBABE))), classifier -> Section(Map(name -> Field(NEWS20), classCount -> Field(20)))))
 ```
 
 ---
