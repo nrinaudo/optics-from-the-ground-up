@@ -98,7 +98,7 @@ blockquote p {
     display: none;
 }
 
-.remark-code-span-highlighted {
+.remark-code-span-highlighted, .remark-code-line-highlighted {
     padding         : 0;
     background-color: #b2ebf2;
 }
