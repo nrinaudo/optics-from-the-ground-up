@@ -19,10 +19,6 @@ class: center, middle
 
 # Algebraic Data Types
 
-???
-
-Before we can tackle optics, we need a quick reminder of what ADTs are.
-
 ---
 
 ## Product types
@@ -66,10 +62,6 @@ case class Classifier(
 )
 ```
 
-
-???
-
-Product types can be thought of as an `AND` operator: `Classifier` is a `String AND Int`.
 ---
 
 ## Product types
@@ -168,10 +160,6 @@ case `class Login`(
 ) `extends Auth`
 ```
 
-???
-
-Sum types can be thought of as an `OR` operator: `Auth` is a `Token OR Login`.
-
 ---
 
 ## Sum types
@@ -246,10 +234,6 @@ case class MlService(
 )
 ```
 
-???
-
-We often mean "composition of sum and product types" when we say ADTs.
-
 ---
 
 ## ADTs
@@ -316,9 +300,6 @@ val service = MlService(
 )
 ```
 
-???
-We want to change the classifier name to `NEWS20`.
-
 ---
 
 ## Motivation
@@ -352,10 +333,6 @@ service.copy(
   )
 )
 ```
-
-???
-
-FP likes to think it's more expressive, less boilerplatey than imperative. We need to get the upper hand back.
 
 ---
 
@@ -476,12 +453,6 @@ val `updated: MlService` =
   nameSetter.set("NEWS20")(service)
 ```
 
-
-???
-
-But we want to upper case the whole thing, not set it to a known value...
-
-
 ---
 
 ## Generic setter type
@@ -562,10 +533,6 @@ val `updated: MlService` =
   nameSetter.modify(_.toUpperCase)(service)
 ```
 
-???
-
-`modify` _could_ have a default implementation, if we had a `get`.
-
 ---
 
 ## Generic setter type
@@ -638,13 +605,6 @@ val `classifierName: String` =
   nameSetter.get(service)
 ```
 
-
-???
-
-`Setter` doesn't seem like such a good name anymore though.
-
-Our type allows us to _focus_ on a specific part of an ADT...
-
 ---
 
 ## Lens
@@ -670,10 +630,6 @@ trait `Lens[S, A]` {
   def modify(f: A => A)(s: S): S = set(f(get(s)))(s)
 }
 ```
-
-???
-
-This looks painful to instantiate. Let's give ourselves helpers.
 
 ---
 
@@ -760,10 +716,6 @@ object Lens {
 }
 ```
 
-???
-
-Let's create a couple of type aliases to help with some intuition I want you to have later...
-
 ---
 
 ## Lens
@@ -828,19 +780,11 @@ object Lens {
 }
 ```
 
-???
-
-Now that we have all the tools we need, let's see what we're trying to achieve
-
 ---
 
 ## Service → Classifier name
 
 .center[![Service to classifier name](img/service-name.svg)]
-
-???
-
-This suggests that, rather than go directly from the first to the last element in the path, we should probably create segments and link them up somehow.
 
 ---
 
@@ -918,12 +862,6 @@ val classifierName = Lens[Classifier, String](
 serviceClassifier.modify(classifierName.set("NEWS20"))(service)
 // res1: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(NEWS20,20))
 ```
-
-???
-
-This is better than what we started with, but not by much...
-
-It often helps to turn such things into functions to identify more generic patterns.
 
 ---
 
@@ -1004,10 +942,6 @@ def setName(
     serviceClassifier.modify(nameClassifier.set(name))(service)
 ```
 
-???
-
-There is nothing in this implementation that relies on knowing the types `MlService`, `Classifier`, or `String`.
-
 ---
 
 ## Composing lenses
@@ -1047,10 +981,6 @@ def setter[S, A, B](
     l1.modify(l2.set(b))(s)
 ```
 
-???
-
-This is starting to look familiar...
-
 ---
 
 ## Composing lenses
@@ -1076,10 +1006,6 @@ def setter[S, A, B](
   : `Set[S, B]` = (b, s) =>
     l1.modify(l2.set(b))(s)
 ```
-
-???
-
-That looks a lot like half a `Lens[S, B]`. Can we write the other half?
 
 ---
 
@@ -1133,10 +1059,6 @@ def getter[S, A, B](
     `l2.get`(l1.get(s))
 ```
 
-???
-
-We can compose lenses!
-
 ---
 
 ## Composing lenses
@@ -1180,10 +1102,6 @@ def composeLL[S, A, B](
 ```
 
 
-???
-
-Now that we can compose lenses, let's recall what we're trying to achieve
-
 ---
 
 ## Service → Classifier → name
@@ -1200,10 +1118,6 @@ val serviceClassifierName = composeLL(
   classifierName
 )
 ```
-
-???
-
-And this works out as expected
 
 --
 
@@ -1250,10 +1164,6 @@ val service = MlService(
 )
 ```
 
-???
-
-We want to change the service's authentication user name.
-
 ---
 
 ## Motivation
@@ -1265,10 +1175,6 @@ We want to change the service's authentication user name.
 ## Motivation
 
 .center[![Service to user](img/service-user.svg)]
-
-???
-
-First, we need to go to the auth...
 
 ---
 
@@ -1288,21 +1194,11 @@ val serviceAuth = Lens[MlService, Auth](
 )
 ```
 
-???
-
-Then, for the next link...
-
 ---
 
 ## Auth → Login
 
 .center[![Auth to login](img/auth-login.svg)]
-
-???
-
-This looks dodgy - the arrow is different, we're working with sum types...
-
-One option is to sort of ignore the problem and see how far we can get...
 
 ---
 
@@ -1392,19 +1288,11 @@ val authUser = Lens[Auth, String](
 )
 ```
 
-???
-We're stuck. `Token` doesn't have a user name to return.
-
 ---
 
 ## Auth → Login
 
 .center[![Auth to login](img/auth-login.svg)]
-
-???
-What we need is a way to go from `Auth` to `Login`.
-
-A way to separate `Auth` into its constituent types...
 
 ---
 
@@ -1622,10 +1510,6 @@ val `updated: Auth` = authLogin.set(Login("foo", "bar"))
 val login: Option[Login] = authLogin.get(service.auth)
 ```
 
-???
-
-We're going to need simple ways of creating `Prism` values.
-
 ---
 
 ## Prism
@@ -1659,10 +1543,6 @@ object Prism {
   }
 }
 ```
-
-???
-
-We can make this more user friendly by supporting partial functions.
 
 ---
 
@@ -1748,10 +1628,6 @@ object Prism {
 }
 ```
 
-???
-
-We can now create our missing link
-
 ---
 
 ## Auth → Login
@@ -1802,19 +1678,11 @@ val authLogin = Prism.fromPartial[Auth, Login](
 )
 ```
 
-???
-
-And... compose them?
-
 ---
 
 ## Service → Login
 
 .center[![Service to login](img/service-login.svg)]
-
-???
-
-Can we make this work with what we've built so far?
 
 ---
 
@@ -1895,10 +1763,6 @@ def composeLP[S, A, B](
   getter = s => ???
 )
 ```
-
-???
-
-We can't. We can go from a `B` to an `A`, but not from an `A` to an `S`.
 
 ---
 
@@ -1983,14 +1847,6 @@ def composeLP[S, A, B](
   }
 )
 ```
-
-???
-
-It cannot: `get` cannot be implemented (sanely).
-
-It looks like we'll need a third structure - a hybrid between a `Lens` and a `Prism`.
-
-A `Lens` for something that might not be there...
 
 ---
 
@@ -2243,13 +2099,6 @@ val `login: Option[Login]` = serviceLogin.get(service)
 ```
 
 
-???
-
-(Yeah, the fancy optics metaphor apparently breaks down at this point)
-
-
-We'll need the usual creation helpers.
-
 ---
 
 ## Optional
@@ -2396,10 +2245,6 @@ class: center, middle
 
 # End of intermission
 
-???
-
-We can now compose our way down to he leaf of our tree...
-
 ---
 
 ## Service → Login
@@ -2457,10 +2302,6 @@ serviceUser.set("psmith")(service)
 // res4: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
-???
-
-And *that* is far shorter than the Java alternative. Take that, Java! Only took 70-odd slides of boilerplate to be able to write cool one liners.
-
 ---
 
 ## Key takeaways
@@ -2496,9 +2337,6 @@ val nameLens = lensu[Classifier, String](
 val classifierName = classifierLens andThen nameLens
 ```
 
-???
-[scalaz] has lenses, but no prisms or optionals
-
 ---
 
 ## Scalaz
@@ -2519,10 +2357,6 @@ val classifierName = lens[MlService].classifier.name
 
 val userName = lens[MlService].auth.user
 ```
-
-???
-
-[shapeless] has lenses and prisms (but sort of conflates prisms and optionals):
 
 ---
 
@@ -2550,11 +2384,6 @@ val userName = GenLens[MlService](_.auth).
   composeLens(GenLens[Login](_.user))
 ```
 
-???
-
-[Monocle] is the reference Scala optics implementation:
-
-
 ---
 
 ## Monocle
@@ -2567,12 +2396,6 @@ userName.set("psmith")(service)
 // res9: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
-???
-
-[Monocle] offers far more tools than lenses, prisms and optionals.
-
-They rely on concepts that are out of scope for this presentation, though.
-
 ---
 
 ## Key takeaway
@@ -2584,10 +2407,6 @@ Optics are useful enough to warrant implementations in at least 3 major librarie
 class: center, middle
 
 # Concrete use case: ConfigPath
-
-???
-
-We can use optics to work with something other than ADTs
 
 ---
 
@@ -2685,10 +2504,6 @@ case class Field(
 ) extends Config
 ```
 
-???
-
-This could be used to store configuration expressed in a JSON-like format
-
 ---
 
 ## Configuration ADT
@@ -2721,12 +2536,6 @@ val conf = Section(Map(
   ))
 ))
 ```
-
-???
-
-We'd like to provide a comfortable way to query / update it.
-
-Optics are one possible good solution.
 
 ---
 
@@ -2914,13 +2723,6 @@ case class ConfigPath(current: Optional[Config, Config]) {
 }
 ```
 
-???
-
-`ConfigPath` can be thought of as a cursor on a position in the configuration.
-
-But how do we refer to the root of our tree?
-
-
 ---
 
 ## ConfigPath
@@ -2979,10 +2781,6 @@ val identityOpt = Optional[Config, Config](
 ```scala
 ConfigPath(identityOpt)
 ```
-
-???
-
-We can now write an entire path
 
 ---
 
@@ -3055,11 +2853,6 @@ val classifierName: Optional[Config, Field] =
     child("name").
     `asField`
 ```
-
-
-???
-
-This works, but it's not exactly comfortable.
 
 ---
 
@@ -3143,9 +2936,6 @@ object UpCase extends Dynamic {
 UpCase.bar
 // res11: String = BAR
 ```
-
-???
-Referencing unknown members is equivalent to applying `selectDynamic`:
 
 ---
 
@@ -3233,10 +3023,6 @@ val classifierName =
     name.
     asField
 ```
-
-???
-
-Much better, but this `ConfigPath(identityOpt)` is unpleasant.
 
 ---
 
