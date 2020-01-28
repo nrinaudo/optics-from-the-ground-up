@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Optics from the ground up</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+  </head>
+  <body>
+      <textarea id="source">
+class: center, middle
+
+.annotated[![Classifier](img/annotated.png)]
+
+# Optics from the ground up
+
+Nicolas Rinaudo • [@NicolasRinaudo] • [Besedo]
+
+---
+
+## Overview
+
+This is meant for Scala developers of beginner to intermediate levels.
+
+Basic understanding of Scala syntax is expected.
+
+Knowledge of Algebraic Data Types is useful, although we'll start with a quick recap of these.
+
+---
+
+class: center, middle
+
+# Algebraic Data Types
+
+---
+
+## Product types
+
+Aggregation of types: `String ⋀ Int`
+
+```tut:silent
+case class Classifier(
+  name      : String,
+  classCount: Int
+)
+```
+
+---
+
+## Product types
+
+.center[![Classifier](img/classifier.svg)]
+
+---
+
+## Sum types
+
+Aggregation of types: `Token ⋁ Login`
+
+```tut:silent
+sealed trait Auth
+
+case class Token(
+  token: String
+) extends Auth
+
+case class Login(
+  user    : String,
+  password: String
+) extends Auth
+```
+
+---
+
+## Sum types
+
+.center[![Auth](img/auth.svg)]
+
+---
+
+## ADTs
+
+
+Compositions of sum and product types:
+
+```tut:silent
+case class MlService(
+  auth      : Auth,
+  classifier: Classifier
+)
+```
+
+---
+
+## ADTs
+
+.center[![MlService](img/mlservice.svg)]
+
+---
+
+## Key takeaways
+
+* Product types aggregate types with an `⋀`
+* Sum types aggregate types with an `⋁`
+* ADTs are nested sum and product types
+
+---
+
+class: center, middle
+
+# Lenses
+
+---
+
+## Motivation
+
+```tut:silent
+val service = MlService(
+  Login("jsmith", "Tr0ub4dor&3"),
+  Classifier("news20", 20)
+)
+```
+
+We need to uppercase the classifier name: `NEWS20` instead of `news20`.
+
+---
+
+## Motivation
+
+.center[![Service to classifier name](img/service-name.svg)]
+
+---
+
+## Motivation
+
+This is pretty straightforward in imperative languages:
+
+```scala
+service.classifier.name = "NEWS20"
+```
+
+--
+
+Not so much in Scala:
+
+```tut:silent
+service.copy(
+  classifier = service.classifier.copy(
+    name = "NEWS20"
+  )
+)
+```
+
+Surely we can do better than that.
+
+---
+
+## Generic setter type
+
+```tut:silent
+trait Setter[S, A] {
+  def set(a: A)(s: S): S
+}
+```
+
+```scala
+val nameSetter: Setter[MlService, String] = ???
+
+val updated: MlService =
+  nameSetter.set("NEWS20")(service)
+```
+
+--
+
+But we're trying to _modify_ an existing value, not set it to a hardcoded one.
+
+---
+
+## Generic setter type
+
+```tut:silent
+trait Setter[S, A] {
+  def set(a: A)(s: S): S
+  def modify(f: A => A)(s: S): S
+}
+```
+
+```scala
+val updated: MlService =
+  nameSetter.modify(_.toUpperCase)(service)
+```
+
+--
+
+If we could _get_ the `A` out of the `S`, we'd have a free implementation of `modify`...
+
+---
+
+## Generic setter type
+
+```tut:silent
+trait Setter[S, A] {
+  def set(a: A)(s: S): S
+  def get(s: S): A
+
+  def modify(f: A => A)(s: S): S = set(f(get(s)))(s)
+}
+```
+
+```scala
+val classifierName: String =
+  nameSetter.get(service)
+```
+
+--
+
+A `Setter` with a `get` method is... disturbing.
+
+How could we name something that allows us to _focus_ on a specific part of a product type?
+
+---
+
+## Lens
+
+```tut:silent
+trait Lens[S, A] {
+  def set(a: A)(s: S): S
+  def get(s: S): A
+
+  def modify(f: A => A)(s: S): S = set(f(get(s)))(s)
+}
+```
+
+--
+
+This looks painful to instantiate. We need to write a creation helper.
+
+---
+
+## Lens
+
+```tut:silent
+object Lens {
+  def apply[S, A](
+    setter: (A, S) => S,
+    getter: S      => A
+  ) = new Lens[S, A] {
+
+    override def set(a: A)(s: S) = setter(a, s)
+    override def get(s: S)       = getter(s)
+  }
+}
+```
+
+--
+
+We'll need to do some work with the types of `setter` and `getter`, so let's name them.
+
+---
+
+## Lens
+
+```tut:silent
+type Set[S, A] = (A, S) => S
+
+type Get[S, A] = S => A
+```
+
+--
+
+We can now update `Lens` to use them.
+
+---
+
+## Lens
+
+```tut:silent
+object Lens {
+  def apply[S, A](
+    setter: Set[S, A],
+    getter: Get[S, A]
+  ) = new Lens[S, A] {
+
+    override def set(a: A)(s: S) = setter(a, s)
+    override def get(s: S)       = getter(s)
+  }
+}
+```
+
+--
+
+Equiped with this, we can get back to our actual problem.
+
+---
+
+## Service → Classifier name
+
+.center[![Service to classifier name](img/service-name.svg)]
+
+---
+
+## Service → Classifier name
+
+This seems to suggest that we should go step by step rather than do the whole traversal in one go.
+
+Let's start with the first step, `MlService` to `Classifier`.
+
+---
+
+## Service → Classifier
+
+
+.center[![Service to classifier](img/service-classifier.svg)]
+
+---
+
+## Service → Classifier
+
+```tut:silent
+val serviceClassifier = Lens[MlService, Classifier](
+  setter = (a, s) => s.copy(classifier = a),
+  getter = s      => s.classifier
+)
+```
+
+--
+
+We can get the second step, `Classifier` to `String` (classifier name) with suspiciously similar code.
+
+---
+
+## Classifier → name
+
+.center[![Classifier to name](img/classifier-name.svg)]
+
+---
+
+## Classifier → name
+
+```tut:silent
+val classifierName = Lens[Classifier, String](
+  setter = (a, s) => s.copy(name = a),
+  getter = s      => s.name
+)
+```
+
+--
+
+We now have all the lenses we need and can simply apply them...
+
+---
+
+## Classifier → name
+
+```tut:book
+serviceClassifier.modify(classifierName.set("NEWS20"))(service)
+```
+
+--
+
+This is a bit of a let down - not the clear improvement we were hoping for.
+
+It often helps to turn such things into functions to identify more generic patterns.
+
+---
+
+## Composing lenses
+
+```tut:silent
+def setName(
+    serviceClassifier: Lens[MlService, Classifier],
+    nameClassifier   : Lens[Classifier, String]
+  )
+  (name: String, service: MlService): MlService =
+    serviceClassifier.modify(nameClassifier.set(name))(service)
+```
+
+--
+
+There is nothing in this implementation that relies on knowing the types `MlService`, `Classifier`, or `String`.
+
+We only need the lenses to commute: `serviceClassifier` must end on the type by which `nameClassifier` begins.
+
+---
+
+## Composing lenses
+
+```tut:silent
+def setter[S, A, B](
+    l1: Lens[S, A],
+    l2: Lens[A, B]
+  )
+  (b: B, s: S): S =
+    l1.modify(l2.set(b))(s)
+```
+
+--
+
+This return type should look familiar. It's a `Set[S, B]`.
+
+---
+
+## Composing lenses
+
+```tut:silent
+def setter[S, A, B](
+    l1: Lens[S, A],
+    l2: Lens[A, B]
+  )
+  : Set[S, B] = (b, s) =>
+    l1.modify(l2.set(b))(s)
+```
+
+--
+
+We've managed to build the first half of a `Lens[S, B]`. Can we write the other half?
+
+---
+
+## Composing lenses
+
+```tut:silent
+def getter[S, A, B](
+    l1: Lens[S, A],
+    l2: Lens[A, B]
+  )
+  : Get[S, B] = s =>
+    l2.get(l1.get(s))
+```
+
+--
+
+We can: given `Lens[S, A]` and `Lens[A, B]`, we can get `Lens[S, B]`.
+
+---
+
+## Composing lenses
+
+```tut:silent
+def composeLL[S, A, B](
+    l1: Lens[S, A],
+    l2: Lens[A, B]
+  ) = Lens[S, B](
+    setter(l1, l2),
+    getter(l1, l2)
+  )
+```
+
+--
+
+This should allow us to complete the task we initially set out to accomplish.
+
+---
+
+## Service → Classifier → name
+
+.center[![Service to classifier name](img/service-name.svg)]
+
+---
+
+## Service → Classifier → name
+
+```tut:silent
+val serviceClassifierName = composeLL(
+  serviceClassifier,
+  classifierName
+)
+```
+
+--
+
+And with that, we can, finally, write the clear and concise code we were hoping for.
+
+---
+
+## Service → Classifier → name
+
+```tut:book
+serviceClassifierName.set("NEWS20")(service)
+
+serviceClassifierName.modify(_.toUpperCase)(service)
+```
+
+---
+
+## Key takeaway
+
+
+Lenses are used to drill down arbitrarily deep in nested product types
+
+---
+
+class: center, middle
+
+# Prisms & Optionals
+
+---
+
+## Motivation
+
+```tut:silent
+val service = MlService(
+  Login("jsmith", "Tr0ub4dor&3"),
+  Classifier("news20", 20)
+)
+```
+
+--
+
+This time, we want to change the user name we declared for authentication.
+
+---
+
+## Motivation
+
+.center[![Service to user](img/service-user.svg)]
+
+---
+
+## Motivation
+
+Our first step is similar to what we've done so far, a lens from `MlService` to `Auth`
+
+---
+
+## Service → Auth
+
+.center[![Service to auth](img/service-auth.svg)]
+
+---
+
+## Service → Auth
+
+
+```tut:silent
+val serviceAuth = Lens[MlService, Auth](
+  setter = (a, s) => s.copy(auth = a),
+  getter = s      => s.auth
+)
+```
+
+--
+
+The next part of the path, however, looks suspicious.
+
+---
+
+## Auth → Login
+
+.center[![Auth to login](img/auth-login.svg)]
+
+---
+
+## Auth → Login
+
+This looks complicated. Can we pretend that the problem doesn't exist and just go straight for the user name?
+
+---
+
+## Auth → user?
+
+.center[![Auth to user](img/auth-user.svg)]
+
+---
+
+## Auth → user?
+
+```tut:silent
+val authUser = Lens[Auth, String](
+  setter = (a, s) => ???,
+
+  // Auth -> String
+  getter = s => s match {
+    case Login(user, _) => user
+    case Token(token)   => ???
+  }
+)
+```
+
+--
+
+We cannot. `Token` does not have a user name to return.
+
+---
+
+## Auth → Login
+
+.center[![Auth to login](img/auth-login.svg)]
+
+---
+
+## Auth → Login
+
+What we need is a way to go from `Auth` to `Login`.
+
+A way to, say, diffract a sum type...
+
+---
+
+## Prism
+
+```tut:silent
+trait Prism[S, A] {
+  def set(a: A): S
+  def get(s: S): Option[A]
+
+  def modify(f: A => A)(s: S): S = get(s) match {
+    case Some(a) => set(f(a))
+    case None    => s
+  }
+}
+```
+
+--
+
+We'll be creating a bunch of these, so we'll need construction helpers...
+
+---
+
+## Prism
+
+
+```tut:silent
+object Prism {
+  def apply[S, A](
+    setter: A => S,
+    getter: S => Option[A]
+  ) = new Prism[S, A] {
+    override def set(a: A) = setter(a)
+    override def get(s: S) = getter(s)
+  }
+}
+```
+
+--
+
+This can be improved on by using Scala's partial functions and their weird subtyping relationship with total ones.
+
+---
+
+## Prism
+
+```tut:silent
+object Prism {
+  def apply[S, A](
+    setter: A => S,
+    getter: S => Option[A]
+  ) = new Prism[S, A] {
+    override def set(a: A) = setter(a)
+    override def get(s: S) = getter(s)
+  }
+
+  def fromPartial[S, A](
+    setter: A => S,
+    getter: PartialFunction[S, A]
+  ) = Prism(setter, getter.lift)
+}
+```
+
+--
+
+We should now be able to go from `Auth` to `Login`...
+
+---
+
+## Auth → Login
+
+.center[![Auth to login](img/auth-login.svg)]
+
+---
+
+## Auth → Login
+
+```tut:silent
+val authLogin = Prism.fromPartial[Auth, Login](
+  setter = a => a,
+  getter = { case s: Login => s }
+)
+```
+
+--
+
+And... compose the elements we've build so far?
+
+---
+
+## Service → Login
+
+.center[![Service to login](img/service-login.svg)]
+
+---
+
+## Service → Login
+
+Can we do that though? We know how to compose lenses, but we have a lens and a prism.
+
+Is the composition a prism?
+
+---
+
+## Lens ∘ Prism ≟ Prism
+
+```tut:silent
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = Prism[S, B](
+
+  // B => S
+  setter = b => {
+    val s: S = ???
+    l.set(p.set(b))(s)
+  },
+
+  getter = s => ???
+)
+```
+
+--
+
+It's not. We can't write the setter, there's no way to get an `S` out of a `B`.
+
+Is the composition a lens?
+
+---
+
+## Lens ∘ Prism ≟ Lens
+
+```tut:silent
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = Lens[S, B](
+
+  setter = (b, s) => ???,
+
+  // S => B
+  getter = s => {
+    val ob: Option[B] = p.get(l.get(s))
+    val b: B = ???
+    b
+  }
+)
+```
+
+--
+
+It's not. We can't write the getter, there's no way to get a `B` out of an `S`.
+
+---
+
+## Lens ∘ Prism = ???
+
+It looks like we'll need a third structure.
+
+Something that merges the properties of a lens and those of a prism...
+
+---
+
+## Optional
+
+```tut:silent
+trait Optional[S, A] {
+  def set(a: A)(s: S): S
+  def get(s: S): Option[A]
+
+  def modify(f: A => A)(s: S): S = get(s) match {
+    case Some(a) => set(f(a))(s)
+    case None    => s
+  }
+}
+```
+
+(Yes, the fancy naming scheme sorts of crumbles at this point).
+
+--
+
+We'll need the usual creation helpers.
+
+---
+
+## Optional
+
+```tut:silent
+object Optional {
+  def apply[S, A](
+    setter: (A, S) => S,
+    getter: S      => Option[A]
+  ) = new Optional[S, A] {
+
+    override def set(a: A)(s: S) = setter(a, s)
+    override def get(s: S)       = getter(s)
+  }
+}
+```
+
+--
+
+We now have 3 data structures, which all compose with one another...
+
+---
+
+class: center, middle
+
+# Intermission: composition galore
+
+---
+
+## Prism ∘ Prism
+
+```tut:silent
+def composePP[S, A, B](
+  p1: Prism[S, A],
+  p2: Prism[A, B]
+) = Prism[S, B](
+  setter = b => p1.set(p2.set(b)),
+  getter = s => p1.get(s).flatMap(p2.get)
+)
+```
+
+---
+
+## Prism ∘ Lens
+
+```tut:silent
+def composePL[S, A, B](
+  p: Prism[S, A],
+  l: Lens[A, B]
+) = Optional[S, B](
+  setter = (b, s) => p.modify(l.set(b))(s),
+  getter = s      => p.get(s).map(l.get)
+)
+```
+
+---
+
+## Lens ∘ Prism
+
+```tut:silent
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = Optional[S, B](
+  setter = (b, s) => l.set(p.set(b))(s),
+  getter = s      => p.get(l.get(s))
+)
+```
+
+---
+
+## Optional ∘ Optional
+
+```tut:silent
+def composeOO[S, A, B](
+  o1: Optional[S, A],
+  o2: Optional[A, B]
+) = Optional[S, B](
+  setter = (b, s) => o1.modify(o2.set(b))(s),
+  getter = s      => o1.get(s).flatMap(o2.get)
+)
+```
+
+---
+
+## Optional ∘ Prism
+
+
+```tut:silent
+def composeOP[S, A, B](
+  o: Optional[S, A],
+  p: Prism[A, B]
+) = Optional[S, B](
+  setter = (b, s) => o.set(p.set(b))(s),
+  getter = s      => o.get(s).flatMap(p.get)
+)
+```
+
+---
+
+## Prism ∘ Optional
+
+
+```tut:silent
+def composePO[S, A, B](
+  p: Prism[S, A],
+  o: Optional[A, B]
+) = Optional[S, B](
+  setter = (b, s) => p.modify(o.set(b))(s),
+  getter = s      => p.get(s).flatMap(o.get)
+)
+```
+
+---
+
+## Optional ∘ Lens
+
+
+```tut:silent
+def composeOL[S, A, B](
+  o: Optional[S, A],
+  l: Lens[A, B]
+) = Optional[S, B](
+  setter = (b, s) => o.modify(l.set(b))(s),
+  getter = s      => o.get(s).map(l.get)
+)
+```
+
+---
+
+## Lens ∘ Optional
+
+
+```tut:silent
+def composeLO[S, A, B](
+  l: Lens[S, A],
+  o: Optional[A, B]
+) = Optional[S, B](
+  setter = (b, s) => l.modify(o.set(b))(s),
+  getter = s      => o.get(l.get(s))
+)
+```
+
+---
+
+class: center, middle
+
+# End of intermission
+
+---
+
+## Optional
+
+An interesting pattern to notice is that:
+* lenses compose with lenses to give a new lens
+* prisms compose with prisms to give a new prism
+* every other combination gives an optional
+
+--
+
+We should be able to get to the end of our path now.
+
+---
+
+## Service → Login
+
+.center[![Service to login](img/service-login.svg)]
+
+---
+
+## Service → Login
+
+```tut:silent
+val serviceLogin = composeLP(
+  serviceAuth,
+  authLogin
+)
+```
+
+--
+
+Just one more step to do...
+
+---
+
+## Login → user
+
+.center[![Login to user](img/login-user.svg)]
+
+---
+
+## Login → user
+
+```tut:silent
+val loginUser = Lens[Login, String](
+  setter = (a, s) => s.copy(user = a),
+  getter = s      => s.user
+)
+```
+
+--
+
+We can now compose all these steps together.
+
+---
+
+## Service → user
+
+.center[![Service to user](img/service-user.svg)]
+
+---
+
+## Service → user
+
+```tut:silent
+val serviceUser = composeOL(
+  serviceLogin,
+  loginUser
+)
+```
+
+--
+
+This finally allows us to modify the user name in a single call.
+
+---
+
+## Service → user
+
+```tut:book
+serviceUser.set("psmith")(service)
+```
+
+--
+
+And *that* is far shorter than the corresponding imperative code. It only took 70-odd slides to reach that point. Victory!
+
+---
+
+## Key takeaways
+
+
+* Prisms are used to explore sum types
+* They compose with lenses and yield optionals
+
+---
+
+class: center, middle
+
+# Libraries
+
+---
+
+## Scalaz
+
+Scalaz has:
+
+* lenses (called _lensu_, for some reason)
+* ~~prisms~~
+* ~~optionals~~
+* ~~code gen~~
+
+---
+
+## Scalaz
+
+```tut:silent
+import scalaz.Lens.lensu
+
+val classifierLens = lensu[MlService, Classifier](
+  (s, a) => s.copy(classifier = a),
+  s      => s.classifier
+)
+
+val nameLens = lensu[Classifier, String](
+  (s, a) => s.copy(name = a),
+  s      => s.name
+)
+
+val classifierName = classifierLens andThen nameLens
+```
+
+--
+
+The call site API is essentially the same as ours.
+
+---
+
+## Scalaz
+
+```tut:book
+classifierName.set(service, "news_20")
+```
+
+--
+
+Scalaz's support for optics is... not great.
+
+---
+
+## Shapeless
+
+Shapeless has:
+
+* lenses
+* prisms
+* ~~optionals~~
+* code gen
+
+--
+
+Weirdly, shapeless calls prisms optionals - it turns out it has optionals but not prisms.
+
+This can be confusing.
+
+---
+
+## Shapeless
+
+```tut:silent
+import shapeless.lens
+
+val classifierName = lens[MlService].classifier.name
+
+val userName = lens[MlService].auth.user
+```
+
+--
+
+The call site API is essentially the same as ours.
+
+---
+
+## Shapeless
+
+```tut:book
+classifierName.set(service)("news_20")
+userName.set(service)("psmith")
+```
+
+--
+
+Shapeless' support for optics is pretty solid.
+
+---
+
+## Monocle
+
+Monocle has:
+
+* lenses
+* prisms
+* optionals
+* code gen
+* and much more (traversals, isos...)
+
+--
+
+Its current syntax could admitedly stand to be a bit terser.
+
+
+---
+
+## Monocle
+
+```tut:silent
+import monocle.macros._
+
+val classifierName = GenLens[MlService](_.classifier.name)
+
+val userName = GenLens[MlService](_.auth).
+  composePrism(GenPrism[Auth, Login]).
+  composeLens(GenLens[Login](_.user))
+```
+
+--
+
+The call site API is exactly the same as ours.
+
+---
+
+## Monocle
+
+```tut:book
+classifierName.set("news_20")(service)
+userName.set("psmith")(service)
+```
+
+--
+
+Monocle is the most complete and polyvalent Scala optics library I know of.
+
+---
+
+## Key takeaway
+
+Optics are useful enough to warrant implementations in at least 3 major libraries
+
+---
+
+class: center, middle
+
+# Concrete use case: ConfigPath
+
+---
+
+## Configuration ADT
+
+```tut:silent
+sealed trait Config
+
+case class Section(
+  children: Map[String, Config]
+) extends Config
+
+case class Field(
+  value: String
+) extends Config
+```
+
+--
+
+This is intended to hold, for example, JSON configuration data.
+
+---
+
+## Configuration ADT
+
+
+```json
+{
+  "auth": {
+    "token": "0xCAFEBABE"
+  },
+  "classifier": {
+    "name"      : "news20",
+    "classCount": 20
+  }
+}
+```
+
+---
+
+## Configuration ADT
+
+```tut:silent
+val conf = Section(Map(
+  "auth" -> Section(Map(
+    "token" -> Field("0xCAFEBABE")
+  )),
+  "classifier" -> Section(Map(
+    "name"       -> Field("news20"),
+    "classCount" -> Field("20")
+  ))
+))
+```
+
+--
+
+We'd like to provide a comfortable way to query / update it.
+
+Optics are one possible good solution. The obvious first step is a prism to split `Config`.
+
+---
+
+## Configuration optics
+
+```tut:silent
+val section = Prism.fromPartial[Config, Section](
+  setter = a => a,
+  getter = { case a: Section => a }
+)
+
+val field = Prism.fromPartial[Config, Field](
+  setter = a => a,
+  getter = { case a: Field => a }
+)
+```
+
+--
+
+On top of that, we'll need to access specific children of a section.
+
+---
+
+## Configuration optics
+
+```tut:silent
+def sectionChild(name: String) = Optional[Section, Config](
+  setter = (a, s) => Section(s.children + (name -> a)),
+  getter = s      => s.children.get(name)
+)
+```
+
+--
+
+With that, we can create a sort of cursor on configuration data.
+
+---
+
+## ConfigPath
+
+```tut:silent
+case class ConfigPath(current: Optional[Config, Config]) {
+
+  val asField   = composeOP(current, field)
+  val asSection = composeOP(current, section)
+
+  def child(name: String) = ConfigPath(
+    composeOO(
+      asSection,
+      sectionChild(name)
+    )
+  )
+}
+```
+
+--
+
+This ought to work, but... how do we refer to the root of our configuration data?
+
+---
+
+## ConfigPath
+
+```tut:silent
+val identityOpt = Optional[Config, Config](
+  setter = (a, _) => a,
+  getter = s      => Some(s)
+)
+```
+
+```tut:silent
+ConfigPath(identityOpt)
+```
+
+--
+
+We now have everything we need to write a complete path:
+
+---
+
+## ConfigPath
+
+```tut:silent
+val classifierName: Optional[Config, Field] =
+  ConfigPath(identityOpt).
+    child("classifier").
+    child("name").
+    asField
+```
+
+--
+
+This works, but can be improved on with some dark magic.
+
+---
+
+## Dynamic
+
+```tut:silent
+import scala.language.dynamics
+
+object UpCase extends Dynamic {
+  def selectDynamic(missingMember: String): String =
+    missingMember.toUpperCase
+}
+```
+
+Accessing an unknown member is transformed into a call to `selectDynamic` with that member's name
+
+---
+
+## Dynamic
+
+```tut:book
+// Equivalent to UpCase.selectDynamic("bar")
+UpCase.bar
+```
+
+--
+
+We can use that mechanism to replace our previous `child` method.
+
+---
+
+## Dynamic ConfigPath
+
+```tut:silent
+case class ConfigPath(
+    current: Optional[Config, Config]
+  ) extends Dynamic {
+
+  val asField   = composeOP(current, field)
+  val asSection = composeOP(current, section)
+
+  def selectDynamic(child: String) = ConfigPath(
+    composeOO(
+      asSection,
+      sectionChild(child)
+    )
+  )
+}
+```
+
+--
+
+Much better, but this `ConfigPath(identityOpt)` is unpleasant.
+
+---
+
+## Dynamic ConfigPath
+
+```tut:silent
+val root = ConfigPath(identityOpt)
+```
+
+--
+
+This, finally, allows us to have a clear and pleasant DSL for accessing nested configuration data.
+
+---
+
+## Dynamic ConfigPath
+
+```tut:silent
+val classifierName = root.classifier.name.asField
+```
+
+```tut:book
+classifierName.set(Field("NEWS20"))(conf)
+```
+
+---
+
+## Key takeaway
+
+Optics can be used for more than just exploring "simple" ADTs
+
+---
+class: center, middle
+
+# Wrapping things up
+
+---
+
+## If you only remember 1 slide...
+
+* Lenses are used to drill down arbitrarily deep in nested product types
+* Prisms are used to explore sum types
+* They compose into optionals
+* You do not need to understand the theory (but it's beautiful)
+
+---
+class: center, middle
+
+# Questions?
+
+[scalaz]:https://scalaz.github.io/7/
+[shapeless]:https://github.com/milessabin/shapeless
+[Monocle]:https://github.com/julien-truffaut/Monocle
+[Besedo]:https://twitter.com/besedo_official
+[@NicolasRinaudo]:https://twitter.com/NicolasRinaudo
+
+    </textarea>
+    <script src="js/remark.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var slideshow = remark.create({
+        highlightStyle: 'github',
+        highlightSpans: true,
+        highlightLines: true
+      });
+    </script>
+  </body>
+</html>

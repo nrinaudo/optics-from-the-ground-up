@@ -1,0 +1,16 @@
+digraph {
+    bgcolor=transparent
+    node[shape="rectangle" style="rounded,filled" color="#2980B9" fontname="Segoe UI,Roboto,Helvetica,Arial,sans-serif" fillcolor="#ffffff" fontcolor="#000000"]
+    edge [color="#2980B9" fontcolor="#000000"]
+
+    // product types
+    classifier [shape=trapezium style=filled fillcolor="#e1f5fe"]
+
+
+    classifier[label=Classifier]
+    classifier_name[label=String shape=box]
+    classifier_classCount[label=Int shape=box]
+
+    classifier -> classifier_name [label=name]
+    classifier -> classifier_classCount [label=classCount]
+}

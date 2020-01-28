@@ -1,0 +1,47 @@
+digraph {
+    bgcolor=transparent
+
+    // Default theme
+    node[shape="rectangle" style="rounded,filled" color="#dddddd" fontname="Segoe UI,Roboto,Helvetica,Arial,sans-serif" fillcolor="#ffffff" fontcolor="#dddddd"]
+    edge [color="#dddddd" fontcolor="#dddddd"]
+
+    // product types
+    mlService, classifier, login, token [shape=trapezium style=filled fillcolor="#f5ffff"]
+
+    // sum types
+    auth[shape=invtrapezium, style=filled fillcolor="#f5ffff"]
+
+    // Lit nodes
+    mlService, classifier, classifier_name [color="#2980B9", fontcolor="#000000"]
+    mlService, classifier [fillcolor="#e1f5fe"]
+
+
+    mlService[label=MlService]
+
+    classifier[label=Classifier]
+    classifier_name[label=String shape=box]
+    classifier_classCount[label=Int shape=box]
+
+    auth[label=Auth]
+
+    login[label=Login]
+    login_user[label=String shape=box]
+    login_password[label=String shape=box]
+
+    token[label=Token]
+    token_token[label=String shape=box]
+
+    mlService -> classifier [label=classifier color="#2980B9" fontcolor="#000000"]
+    mlService -> auth [label=auth]
+
+    classifier -> classifier_name [label=name color="#2980B9" fontcolor="#000000"]
+    classifier -> classifier_classCount [label=classCount]
+
+    token -> token_token [label=token]
+
+    login -> login_user [label=user]
+    login -> login_password [label=password]
+
+    auth -> token[style=dashed]
+    auth -> login[style=dashed]
+}
