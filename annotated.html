@@ -9,7 +9,7 @@
       <textarea id="source">
 class: center, middle
 
-# Optics from the ground up.super[annotated]
+# Optics from the ground up
 
 Nicolas Rinaudo • [@NicolasRinaudo] • [Besedo]
 
@@ -367,7 +367,7 @@ It often helps to turn such things into functions to identify more generic patte
 ```scala
 def setName(
     serviceClassifier: Lens[MlService, Classifier],
-    nameClassifier: Lens[Classifier, String]
+    nameClassifier   : Lens[Classifier, String]
   )
   (name: String, service: MlService): MlService =
     serviceClassifier.modify(nameClassifier.set(name))(service)

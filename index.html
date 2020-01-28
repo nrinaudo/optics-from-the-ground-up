@@ -897,7 +897,7 @@ def setName(name: String, `service: MlService`) =
 ```scala
 def setName(
     serviceClassifier: Lens[MlService, Classifier],
-    nameClassifier: Lens[Classifier, String]
+    nameClassifier   : Lens[Classifier, String]
   )
   (name: String, service: MlService): MlService =
     serviceClassifier.modify(nameClassifier.set(name))(service)
@@ -910,7 +910,7 @@ def setName(
 ```scala
 def setName(
     `serviceClassifier: Lens[MlService, Classifier]`,
-    nameClassifier: Lens[Classifier, String]
+    nameClassifier   : Lens[Classifier, String]
   )
   (name: String, service: MlService): MlService =
     `serviceClassifier`.modify(nameClassifier.set(name))(service)
@@ -923,7 +923,7 @@ def setName(
 ```scala
 def setName(
     serviceClassifier: Lens[MlService, Classifier],
-    `nameClassifier: Lens[Classifier, String]`
+    `nameClassifier   : Lens[Classifier, String]`
   )
   (name: String, service: MlService): MlService =
     serviceClassifier.modify(`nameClassifier`.set(name))(service)
@@ -936,7 +936,7 @@ def setName(
 ```scala
 def setName(
     serviceClassifier: Lens[MlService, `Classifier`],
-    nameClassifier: Lens[`Classifier`, String]
+    nameClassifier   : Lens[`Classifier`, String]
   )
   (name: String, service: MlService): MlService =
     serviceClassifier.modify(nameClassifier.set(name))(service)
