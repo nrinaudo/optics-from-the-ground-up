@@ -1417,8 +1417,6 @@ This, finally, allows us to have a clear and pleasant DSL for accessing nested c
 val classifierName = root.classifier.name.asField
 ```
 
---
-
 ```scala
 classifierName.set(Field("NEWS20"))(conf)
 // res13: Config = Section(Map(auth -> Section(Map(token -> Field(0xCAFEBABE))), classifier -> Section(Map(name -> Field(NEWS20), classCount -> Field(20)))))
