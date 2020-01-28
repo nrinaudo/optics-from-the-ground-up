@@ -102,3 +102,10 @@ blockquote p {
     padding         : 0;
     background-color: #02ebf2;
 }
+
+.annotated img {
+    float   : right;
+    position: absolute;
+    right   : 100px;
+    top     : 100px;
+}
