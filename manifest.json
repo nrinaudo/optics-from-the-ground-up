@@ -1,0 +1,22 @@
+{
+  "name"            : "Optics from the ground up",
+  "short_name"      : "Optics 2000",
+  "icons": [{
+    "src": "images/icon-144.png",
+    "sizes": "144x144",
+    "type": "image/png"
+  }, {
+    "src": "images/icon-152.png",
+    "sizes": "152x152",
+    "type": "image/png"
+  }, {
+    "src": "images/icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }],
+  "lang"            : "en-UK",
+  "start_url"       : "/index.html",
+  "display"         : "standalone",
+  "background_color": "white",
+  "theme_color"     : "white"
+}
