@@ -1,7 +1,7 @@
 enablePlugins(TutPlugin, GhpagesPlugin)
 
 organization := "com.nrinaudo"
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.11"
 
 val tutDirName = settingKey[String]("tut output directory")
 tutDirName := "./"
@@ -38,7 +38,8 @@ git.remoteRepo := "git@github.com:nrinaudo/optics-from-the-ground-up.git"
 
 libraryDependencies ++= Seq(
   "com.chuusai"                %% "shapeless"     % "2.3.3",
-  "com.github.julien-truffaut" %% "monocle-core"  % "1.5.0",
-  "com.github.julien-truffaut" %% "monocle-macro" % "1.5.0",
-  "org.scalaz"                 %% "scalaz-core"   % "7.2.18"
+  "com.github.julien-truffaut" %% "monocle-core"  % "2.0.4",
+  "com.github.julien-truffaut" %% "monocle-macro" % "2.0.4",
+  "com.softwaremill.quicklens" %% "quicklens"     % "1.5.0",
+  "org.scalaz"                 %% "scalaz-core"   % "7.2.30"
 )

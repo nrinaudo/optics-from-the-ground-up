@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Optics from the ground up</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+  </head>
+  <body>
+      <textarea id="source">
+
+```tut:invisible
+case class Classifier(
+  name      : String,
+  classCount: Int
+)
+
+sealed trait Auth
+
+case class Token(
+  token: String
+) extends Auth
+
+case class Login(
+  user    : String,
+  password: String
+) extends Auth
+
+case class MlService(
+  auth      : Auth,
+  classifier: Classifier
+)
+
+val service = MlService(
+  Login("jsmith", "Tr0ub4dor&3"),
+  Classifier("news20", 20)
+)
+```
+
+class: center, middle
+
+# Optics libraries
+
+Nicolas Rinaudo • [@NicolasRinaudo] • [Besedo]
+
+---
+
+class: center, middle
+
+# Libraries
+
+---
+
+## Scalaz
+
+```tut:silent
+import scalaz.Lens.lensu
+
+val classifierLens = lensu[MlService, Classifier](
+  (s, a) => s.copy(classifier = a),
+  s      => s.classifier
+)
+
+val nameLens = lensu[Classifier, String](
+  (s, a) => s.copy(name = a),
+  s      => s.name
+)
+
+val classifierName = classifierLens andThen nameLens
+```
+
+---
+
+## Scalaz
+
+```scala
+import scalaz.Lens.lensu
+
+val classifierLens = `lensu`[MlService, Classifier](
+  (s, a) => s.copy(classifier = a),
+  s      => s.classifier
+)
+
+val nameLens = lensu[Classifier, String](
+  (s, a) => s.copy(name = a),
+  s      => s.name
+)
+
+val classifierName = classifierLens andThen nameLens
+```
+
+---
+
+## Scalaz
+
+```scala
+import scalaz.Lens.lensu
+
+val classifierLens = lensu[MlService, Classifier](
+  `(s, a) => s.copy(classifier = a)`,
+  s      => s.classifier
+)
+
+val nameLens = lensu[Classifier, String](
+  (s, a) => s.copy(name = a),
+  s      => s.name
+)
+
+val classifierName = classifierLens andThen nameLens
+```
+
+---
+
+## Scalaz
+
+```scala
+import scalaz.Lens.lensu
+
+val classifierLens = lensu[MlService, Classifier](
+  (s, a) => s.copy(classifier = a),
+  `s      => s.classifier`
+)
+
+val nameLens = lensu[Classifier, String](
+  (s, a) => s.copy(name = a),
+  s      => s.name
+)
+
+val classifierName = classifierLens andThen nameLens
+```
+
+---
+
+## Scalaz
+
+```scala
+import scalaz.Lens.lensu
+
+val classifierLens = lensu[MlService, Classifier](
+  (s, a) => s.copy(classifier = a),
+  s      => s.classifier
+)
+
+val nameLens = lensu[Classifier, String](
+  (s, a) => s.copy(name = a),
+  s      => s.name
+)
+
+val classifierName = `classifierLens andThen nameLens`
+```
+
+---
+
+## Scalaz
+
+```tut:book
+classifierName.mod(_.toUpperCase, service)
+```
+
+---
+
+## Shapeless
+
+```tut:silent
+import shapeless.lens
+
+val classifierName = lens[MlService].classifier.name
+
+val userName = lens[MlService].auth.user
+```
+
+---
+
+## Shapeless
+
+```scala
+import shapeless.lens
+
+val classifierName = `lens[MlService].classifier.name`
+
+val userName = lens[MlService].auth.user
+```
+
+---
+
+## Shapeless
+
+```tut:book
+classifierName.modify(service)(_.toUpperCase)
+userName.set(service)("psmith")
+```
+
+---
+
+## Quicklens
+
+```tut:silent
+import com.softwaremill.quicklens._
+
+val classifierName = modify[MlService](_.classifier.name)
+
+val userName = modify[MlService](_.auth.when[Login].user)
+```
+
+---
+
+## Quicklens
+
+```scala
+import com.softwaremill.quicklens._
+
+val classifierName = `modify[MlService](_.classifier.name)`
+
+val userName = modify[MlService](_.auth.when[Login].user)
+```
+
+---
+
+## Quicklens
+
+```scala
+import com.softwaremill.quicklens._
+
+val classifierName = modify[MlService](_.classifier.name)
+
+val userName = `modify[MlService](_.auth.when[Login].user)`
+```
+
+---
+
+## Quicklens
+
+```scala
+import com.softwaremill.quicklens._
+
+val classifierName = modify[MlService](_.classifier.name)
+
+val userName = modify[MlService](_.auth.`when[Login]`.user)
+```
+
+---
+
+## Quicklens
+
+```tut:book
+classifierName.using(_.toUpperCase)(service)
+userName.setTo("psmith")(service)
+```
+
+---
+
+## Monocle
+
+```tut:silent
+import monocle.macros._
+
+val classifierName = GenLens[MlService](_.classifier.name)
+
+val userName = GenLens[MlService](_.auth).
+  composePrism(GenPrism[Auth, Login]).
+  composeLens(GenLens[Login](_.user))
+```
+
+---
+
+## Monocle
+
+```scala
+import monocle.macros._
+
+val classifierName = GenLens[MlService](_.classifier.name)
+
+val userName = `GenLens[MlService](_.auth)`.
+  composePrism(GenPrism[Auth, Login]).
+  composeLens(GenLens[Login](_.user))
+```
+
+---
+
+## Monocle
+
+```scala
+import monocle.macros._
+
+val classifierName = GenLens[MlService](_.classifier.name)
+
+val userName = GenLens[MlService](_.auth).
+  `composePrism(GenPrism[Auth, Login])`.
+  composeLens(GenLens[Login](_.user))
+```
+
+---
+
+## Monocle
+
+```scala
+import monocle.macros._
+
+val classifierName = GenLens[MlService](_.classifier.name)
+
+val userName = GenLens[MlService](_.auth).
+  composePrism(GenPrism[Auth, Login]).
+  `composeLens(GenLens[Login](_.user))`
+```
+
+---
+
+## Monocle
+
+```tut:book
+classifierName.modify(_.toUpperCase)(service)
+userName.set("psmith")(service)
+```
+
+---
+class: center, middle
+
+# Questions?
+Nicolas Rinaudo • [@NicolasRinaudo] • [Besedo]
+
+[scalaz]:https://scalaz.github.io/7/
+[shapeless]:https://github.com/milessabin/shapeless
+[Monocle]:https://github.com/julien-truffaut/Monocle
+[Besedo]:https://twitter.com/besedo_official
+[@NicolasRinaudo]:https://twitter.com/NicolasRinaudo
+
+    </textarea>
+    <script src="js/remark.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var slideshow = remark.create({
+        highlightStyle: 'github',
+        highlightSpans: true,
+        highlightLines: true
+      });
+    </script>
+  </body>
+</html>
