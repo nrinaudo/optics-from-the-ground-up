@@ -4,8 +4,6 @@
     <title>Optics from the ground up</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" type="text/css" href="css/style.css"/>
-    <link rel="manifest" href="manifest.json">
-    <link rel="shortcut icon" href="favicon.ico">
   </head>
   <body>
       <textarea id="source">
@@ -37,7 +35,7 @@ case class Classifier(
 ## Product types
 
 ```scala
-case `class Classifier`(
+&#x200B;`case class Classifier`(
   name      : String,
   classCount: Int
 )
@@ -116,7 +114,7 @@ case class Login(
 ## Sum types
 
 ```scala
-sealed `trait Auth`
+&#x200B;`sealed trait Auth`
 
 case class Token(
   token: String
@@ -208,7 +206,7 @@ case class MlService(
 ## ADTs
 
 ```scala
-case `class MlService`(
+&#x200B;`case class MlService`(
   auth      : Auth,
   classifier: Classifier
 )
@@ -270,9 +268,15 @@ case class MlService(
 
 ## Key takeaways
 
-* Product types aggregate types with an `⋀`
-* Sum types aggregate types with an `⋁`
-* ADTs are nested sum and product types
+--
+
+* Product types aggregate types with an `⋀`.
+--
+
+* Sum types aggregate types with an `⋁`.
+--
+
+* ADTs are nested sum and product types.
 
 ---
 
@@ -462,89 +466,7 @@ val `updated: MlService` =
 ```scala
 trait Setter[S, A] {
   def set(a: A)(s: S): S
-  def modify(f: A => A)(s: S): S
-}
-```
-
-```scala
-val updated: MlService =
-  nameSetter.modify(_.toUpperCase)(service)
-```
-
----
-
-## Generic setter type
-
-```scala
-trait Setter[S, A] {
-  def set(a: A)(s: S): S
-  `def modify(f: A => A)(s: S): S`
-}
-```
-
-```scala
-val updated: MlService =
-  nameSetter.`modify(_.toUpperCase)(service)`
-```
-
----
-
-## Generic setter type
-
-```scala
-trait Setter[S, A] {
-  def set(a: A)(s: S): S
-  def modify(`f: A => A`)(s: S): S
-}
-```
-
-```scala
-val updated: MlService =
-  nameSetter.modify(`_.toUpperCase`)(service)
-```
-
----
-
-## Generic setter type
-
-```scala
-trait Setter[S, A] {
-  def set(a: A)(s: S): S
-  def modify(f: A => A)(`s: S`): S
-}
-```
-
-```scala
-val updated: MlService =
-  nameSetter.modify(_.toUpperCase)(`service`)
-```
-
----
-
-## Generic setter type
-
-```scala
-trait Setter[S, A] {
-  def set(a: A)(s: S): S
-  def modify(f: A => A)(s: S): `S`
-}
-```
-
-```scala
-val `updated: MlService` =
-  nameSetter.modify(_.toUpperCase)(service)
-```
-
----
-
-## Generic setter type
-
-```scala
-trait Setter[S, A] {
-  def set(a: A)(s: S): S
   def get(s: S): A
-
-  def modify(f: A => A)(s: S): S = set(f(get(s)))(s)
 }
 ```
 
@@ -561,8 +483,6 @@ val classifierName: String =
 trait Setter[S, A] {
   def set(a: A)(s: S): S
   `def get(s: S): A`
-
-  def modify(f: A => A)(s: S): S = set(f(get(s)))(s)
 }
 ```
 
@@ -579,8 +499,6 @@ val classifierName: String =
 trait Setter[S, A] {
   def set(a: A)(s: S): S
   def get(`s: S`): A
-
-  def modify(f: A => A)(s: S): S = set(f(get(s)))(s)
 }
 ```
 
@@ -597,14 +515,102 @@ val classifierName: String =
 trait Setter[S, A] {
   def set(a: A)(s: S): S
   def get(s: S): `A`
-
-  def modify(f: A => A)(s: S): S = set(f(get(s)))(s)
 }
 ```
 
 ```scala
 val `classifierName: String` =
   nameSetter.get(service)
+```
+
+---
+
+## Generic setter type
+
+```scala
+trait Setter[S, A] {
+  def set(a: A)(s: S): S
+  def get(s: S): A
+
+  def modify(f: A => A)(s: S): S = set(f(get(s)))(s)
+}
+```
+
+```scala
+val updated: MlService =
+  nameSetter.modify(_.toUpperCase)(service)
+```
+
+---
+
+## Generic setter type
+
+```scala
+trait Setter[S, A] {
+  def set(a: A)(s: S): S
+  def get(s: S): A
+
+  `def modify(f: A => A)(s: S): S = set(f(get(s)))(s)`
+}
+```
+
+```scala
+val updated: MlService =
+  nameSetter.`modify(_.toUpperCase)(service)`
+```
+
+---
+
+## Generic setter type
+
+```scala
+trait Setter[S, A] {
+  def set(a: A)(s: S): S
+  def get(s: S): A
+
+  def modify(`f: A => A`)(s: S): S = set(f(get(s)))(s)
+}
+```
+
+```scala
+val updated: MlService =
+  nameSetter.modify(`_.toUpperCase`)(service)
+```
+
+---
+
+## Generic setter type
+
+```scala
+trait Setter[S, A] {
+  def set(a: A)(s: S): S
+  def get(s: S): A
+
+  def modify(f: A => A)(`s: S`): S = set(f(get(s)))(s)
+}
+```
+
+```scala
+val updated: MlService =
+  nameSetter.modify(_.toUpperCase)(`service`)
+```
+
+---
+
+## Generic setter type
+
+```scala
+trait Setter[S, A] {
+  def set(a: A)(s: S): S
+  def get(s: S): A
+
+  def modify(f: A => A)(s: S): `S` = set(f(get(s)))(s)
+}
+```
+
+```scala
+val `updated: MlService` =
+  nameSetter.modify(_.toUpperCase)(service)
 ```
 
 ---
@@ -643,7 +649,6 @@ object Lens {
     setter: (A, S) => S,
     getter: S      => A
   ) = new Lens[S, A] {
-
     override def set(a: A)(s: S) = setter(a, s)
     override def get(s: S)       = getter(s)
   }
@@ -655,12 +660,11 @@ object Lens {
 ## Lens
 
 ```scala
-object `Lens` {
+&#x200B;`object Lens` {
   def apply[S, A](
     setter: (A, S) => S,
     getter: S      => A
   ) = new Lens[S, A] {
-
     override def set(a: A)(s: S) = setter(a, s)
     override def get(s: S)       = getter(s)
   }
@@ -677,7 +681,6 @@ object Lens {
     setter: (A, S) => S,
     getter: S      => A
   ) = `new Lens[S, A]` {
-
     override def set(a: A)(s: S) = setter(a, s)
     override def get(s: S)       = getter(s)
   }
@@ -694,7 +697,6 @@ object Lens {
     `setter: (A, S) => S`,
     getter: S      => A
   ) = new Lens[S, A] {
-
     override `def set(a: A)(s: S) = setter(a, s)`
     override def get(s: S)       = getter(s)
   }
@@ -711,7 +713,6 @@ object Lens {
     setter: (A, S) => S,
     `getter: S      => A`
   ) = new Lens[S, A] {
-
     override def set(a: A)(s: S) = setter(a, s)
     override `def get(s: S)       = getter(s)`
   }
@@ -758,7 +759,6 @@ object Lens {
     setter: Set[S, A],
     getter: Get[S, A]
   ) = new Lens[S, A] {
-
     override def set(a: A)(s: S) = setter(a, s)
     override def get(s: S)       = getter(s)
   }
@@ -775,7 +775,6 @@ object Lens {
     `setter: Set[S, A]`,
     `getter: Get[S, A]`
   ) = new Lens[S, A] {
-
     override def set(a: A)(s: S) = setter(a, s)
     override def get(s: S)       = getter(s)
   }
@@ -791,7 +790,6 @@ object Lens {
 ---
 
 ## Service → Classifier
-
 
 .center[![Service to classifier](img/service-classifier.svg)]
 
@@ -899,10 +897,10 @@ def setName(name: String, `service: MlService`) =
 ```scala
 def setName(
     serviceClassifier: Lens[MlService, Classifier],
-    nameClassifier   : Lens[Classifier, String]
+    classifierName   : Lens[Classifier, String]
   )
   (name: String, service: MlService): MlService =
-    serviceClassifier.modify(nameClassifier.set(name))(service)
+    serviceClassifier.modify(classifierName.set(name))(service)
 ```
 
 ---
@@ -912,10 +910,10 @@ def setName(
 ```scala
 def setName(
     `serviceClassifier: Lens[MlService, Classifier]`,
-    nameClassifier   : Lens[Classifier, String]
+    classifierName   : Lens[Classifier, String]
   )
   (name: String, service: MlService): MlService =
-    `serviceClassifier`.modify(nameClassifier.set(name))(service)
+    `serviceClassifier`.modify(classifierName.set(name))(service)
 ```
 
 ---
@@ -925,10 +923,10 @@ def setName(
 ```scala
 def setName(
     serviceClassifier: Lens[MlService, Classifier],
-    `nameClassifier   : Lens[Classifier, String]`
+    `classifierName   : Lens[Classifier, String]`
   )
   (name: String, service: MlService): MlService =
-    serviceClassifier.modify(`nameClassifier`.set(name))(service)
+    serviceClassifier.modify(`classifierName`.set(name))(service)
 ```
 
 ---
@@ -938,10 +936,10 @@ def setName(
 ```scala
 def setName(
     serviceClassifier: Lens[MlService, `Classifier`],
-    nameClassifier   : Lens[`Classifier`, String]
+    classifierName   : Lens[`Classifier`, String]
   )
   (name: String, service: MlService): MlService =
-    serviceClassifier.modify(nameClassifier.set(name))(service)
+    serviceClassifier.modify(classifierName.set(name))(service)
 ```
 
 ---
@@ -1082,6 +1080,20 @@ def composeLL[S, A, B](
 ```scala
 def composeLL[S, A, B](
     l1: `Lens[S, A]`,
+    l2: Lens[A, B]
+  ) = Lens[S, B](
+    setter(l1, l2),
+    getter(l1, l2)
+  )
+```
+
+---
+
+## Composing lenses
+
+```scala
+def composeLL[S, A, B](
+    l1: Lens[S, A],
     l2: `Lens[A, B]`
   ) = Lens[S, B](
     setter(l1, l2),
@@ -1102,7 +1114,6 @@ def composeLL[S, A, B](
     getter(l1, l2)
   )
 ```
-
 
 ---
 
@@ -1135,8 +1146,9 @@ serviceClassifierName.modify(_.toUpperCase)(service)
 
 ## Key takeaway
 
+--
 
-Lenses are used to drill down arbitrarily deep in nested product types
+Lenses are used to drill down arbitrarily deep in nested product types.
 
 ---
 
@@ -1188,7 +1200,6 @@ val service = MlService(
 
 ## Service → Auth
 
-
 ```scala
 val serviceAuth = Lens[MlService, Auth](
   setter = (a, s) => s.copy(auth = a),
@@ -1225,7 +1236,6 @@ val authUser = Lens[Auth, String](
 ```
 ---
 
-
 ## Auth → user?
 
 ```scala
@@ -1239,8 +1249,6 @@ val authUser = `Lens[Auth, String]`(
   }
 )
 ```
-
-
 
 ---
 
@@ -1257,6 +1265,23 @@ val authUser = Lens[Auth, String](
 * }
 )
 ```
+
+---
+
+## Auth → user?
+
+```scala
+val authUser = Lens[Auth, String](
+  setter = (a, s) => ???,
+
+  // Auth -> String
+  getter = `s => s match` {
+    case Login(user, _) => user
+    case Token(token)   => ???
+  }
+)
+```
+
 
 ---
 
@@ -1516,7 +1541,6 @@ val login: Option[Login] = authLogin.get(service.auth)
 
 ## Prism
 
-
 ```scala
 object Prism {
   def apply[S, A](
@@ -1533,6 +1557,69 @@ object Prism {
 
 ## Prism
 
+```scala
+&#x200B;`object Prism` {
+  def apply[S, A](
+    setter: A => S,
+    getter: S => Option[A]
+  ) = new Prism[S, A] {
+    override def set(a: A) = setter(a)
+    override def get(s: S) = getter(s)
+  }
+}
+```
+
+---
+
+## Prism
+
+```scala
+object Prism {
+  `def apply[S, A]`(
+    setter: A => S,
+    getter: S => Option[A]
+  ) = new `Prism[S, A]` {
+    override def set(a: A) = setter(a)
+    override def get(s: S) = getter(s)
+  }
+}
+```
+
+---
+
+## Prism
+
+```scala
+object Prism {
+  def apply[S, A](
+    `setter: A => S`,
+    getter: S => Option[A]
+  ) = new Prism[S, A] {
+    override `def set(a: A) = setter(a)`
+    override def get(s: S) = getter(s)
+  }
+}
+```
+
+---
+
+## Prism
+
+```scala
+object Prism {
+  def apply[S, A](
+    setter: A => S,
+    `getter: S => Option[A]`
+  ) = new Prism[S, A] {
+    override def set(a: A) = setter(a)
+    override `def get(s: S) = getter(s)`
+  }
+}
+```
+
+---
+
+## Prism
 
 ```scala
 object Prism {
@@ -1867,9 +1954,9 @@ trait Optional[S, A] {
 ```
 
 ```scala
-val serviceLogin: Optional[Service, Login] = ???
+val serviceLogin: Optional[MlService, Login] = ???
 
-val updated: Service =
+val updated: MlService =
   serviceLogin.set(Login("psmith", "Tr0ub4dor&3"))(service)
 
 val login: Option[Login] = serviceLogin.get(service)
@@ -1892,9 +1979,9 @@ trait Optional[`S`, A] {
 ```
 
 ```scala
-val serviceLogin: Optional[`Service`, Login] = ???
+val serviceLogin: Optional[`MlService`, Login] = ???
 
-val updated: Service =
+val updated: MlService =
   serviceLogin.set(Login("psmith", "Tr0ub4dor&3"))(service)
 
 val login: Option[Login] = serviceLogin.get(service)
@@ -1917,9 +2004,9 @@ trait Optional[S, `A`] {
 ```
 
 ```scala
-val serviceLogin: Optional[Service, `Login`] = ???
+val serviceLogin: Optional[MlService, `Login`] = ???
 
-val updated: Service =
+val updated: MlService =
   serviceLogin.set(Login("psmith", "Tr0ub4dor&3"))(service)
 
 val login: Option[Login] = serviceLogin.get(service)
@@ -1942,9 +2029,9 @@ trait Optional[S, A] {
 ```
 
 ```scala
-val serviceLogin: Optional[Service, Login] = ???
+val serviceLogin: Optional[MlService, Login] = ???
 
-val `updated: Service` =
+val `updated: MlService` =
   `serviceLogin.set(Login("psmith", "Tr0ub4dor&3"))(service)`
 
 val login: Option[Login] = serviceLogin.get(service)
@@ -1967,9 +2054,9 @@ trait Optional[S, A] {
 ```
 
 ```scala
-val serviceLogin: Optional[Service, Login] = ???
+val serviceLogin: Optional[MlService, Login] = ???
 
-val updated: Service =
+val updated: MlService =
   serviceLogin.set(`Login("psmith", "Tr0ub4dor&3")`)(service)
 
 val login: Option[Login] = serviceLogin.get(service)
@@ -1992,9 +2079,9 @@ trait Optional[S, A] {
 ```
 
 ```scala
-val serviceLogin: Optional[Service, Login] = ???
+val serviceLogin: Optional[MlService, Login] = ???
 
-val updated: Service =
+val updated: MlService =
   serviceLogin.set(Login("psmith", "Tr0ub4dor&3"))(`service`)
 
 val login: Option[Login] = serviceLogin.get(service)
@@ -2017,9 +2104,9 @@ trait Optional[S, A] {
 ```
 
 ```scala
-val serviceLogin: Optional[Service, Login] = ???
+val serviceLogin: Optional[MlService, Login] = ???
 
-val `updated: Service` =
+val `updated: MlService` =
   serviceLogin.set(Login("psmith", "Tr0ub4dor&3"))(service)
 
 val login: Option[Login] = serviceLogin.get(service)
@@ -2042,9 +2129,9 @@ trait Optional[S, A] {
 ```
 
 ```scala
-val serviceLogin: Optional[Service, Login] = ???
+val serviceLogin: Optional[MlService, Login] = ???
 
-val updated: Service =
+val updated: MlService =
   serviceLogin.set(Login("psmith", "Tr0ub4dor&3"))(service)
 
 val `login: Option[Login] = serviceLogin.get(service)`
@@ -2067,9 +2154,9 @@ trait Optional[S, A] {
 ```
 
 ```scala
-val serviceLogin: Optional[Service, Login] = ???
+val serviceLogin: Optional[MlService, Login] = ???
 
-val updated: Service =
+val updated: MlService =
   serviceLogin.set(Login("psmith", "Tr0ub4dor&3"))(service)
 
 val login: Option[Login] = serviceLogin.get(`service`)
@@ -2092,14 +2179,13 @@ trait Optional[S, A] {
 ```
 
 ```scala
-val serviceLogin: Optional[Service, Login] = ???
+val serviceLogin: Optional[MlService, Login] = ???
 
-val updated: Service =
+val updated: MlService =
   serviceLogin.set(Login("psmith", "Tr0ub4dor&3"))(service)
 
 val `login: Option[Login]` = serviceLogin.get(service)
 ```
-
 
 ---
 
@@ -2126,8 +2212,7 @@ class: center, middle
 
 ---
 
-
-## Prism ∘ Prism
+## Prism ∘ Prism = Prism
 
 ```scala
 def composePP[S, A, B](
@@ -2141,7 +2226,7 @@ def composePP[S, A, B](
 
 ---
 
-## Prism ∘ Lens
+## Prism ∘ Lens = Optional
 
 ```scala
 def composePL[S, A, B](
@@ -2155,7 +2240,7 @@ def composePL[S, A, B](
 
 ---
 
-## Lens ∘ Prism
+## Lens ∘ Prism = Optional
 
 ```scala
 def composeLP[S, A, B](
@@ -2169,7 +2254,7 @@ def composeLP[S, A, B](
 
 ---
 
-## Optional ∘ Optional
+## Optional ∘ Optional = Optional
 
 ```scala
 def composeOO[S, A, B](
@@ -2183,8 +2268,7 @@ def composeOO[S, A, B](
 
 ---
 
-## Optional ∘ Prism
-
+## Optional ∘ Prism = Optional
 
 ```scala
 def composeOP[S, A, B](
@@ -2198,8 +2282,7 @@ def composeOP[S, A, B](
 
 ---
 
-## Prism ∘ Optional
-
+## Prism ∘ Optional = Optional
 
 ```scala
 def composePO[S, A, B](
@@ -2213,8 +2296,7 @@ def composePO[S, A, B](
 
 ---
 
-## Optional ∘ Lens
-
+## Optional ∘ Lens = Optional
 
 ```scala
 def composeOL[S, A, B](
@@ -2228,8 +2310,7 @@ def composeOL[S, A, B](
 
 ---
 
-## Lens ∘ Optional
-
+## Lens ∘ Optional = Optional
 
 ```scala
 def composeLO[S, A, B](
@@ -2308,213 +2389,27 @@ serviceUser.set("psmith")(service)
 
 ## Key takeaways
 
+--
 
-* Prisms are used to explore sum types
-* They compose with lenses and yield optionals
+* Prisms are used to explore sum types.
+--
 
----
-
-class: center, middle
-
-# Libraries
+* They compose with lenses and yield optionals.
 
 ---
-
-## Scalaz
-
-
-```scala
-import scalaz.Lens.lensu
-
-val classifierLens = lensu[MlService, Classifier](
-  (s, a) => s.copy(classifier = a),
-  s      => s.classifier
-)
-
-val nameLens = lensu[Classifier, String](
-  (s, a) => s.copy(name = a),
-  s      => s.name
-)
-
-val classifierName = classifierLens andThen nameLens
-```
-
----
-
-## Scalaz
-
-```scala
-classifierName.set(service, "news_20")
-// res5: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
-```
-
----
-
-## Shapeless
-
-```scala
-import shapeless.lens
-
-val classifierName = lens[MlService].classifier.name
-
-val userName = lens[MlService].auth.user
-```
-
----
-
-## Shapeless
-
-```scala
-classifierName.set(service)("news_20")
-// res6: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
-
-userName.set(service)("psmith")
-// res7: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
-```
-
----
-
-## Monocle
-
-```scala
-import monocle.macros._
-
-val classifierName = GenLens[MlService](_.classifier.name)
-
-val userName = GenLens[MlService](_.auth).
-  composePrism(GenPrism[Auth, Login]).
-  composeLens(GenLens[Login](_.user))
-```
-
----
-
-## Monocle
-
-```scala
-classifierName.set("news_20")(service)
-// res8: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
-
-userName.set("psmith")(service)
-// res9: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
-```
-
----
-
-## Key takeaway
-
-Optics are useful enough to warrant implementations in at least 3 major libraries
-
----
-
 class: center, middle
 
 # Concrete use case: ConfigPath
 
 ---
 
-## Configuration ADT
-
-```scala
-sealed trait Config
-
-case class Section(
-  children: Map[String, Config]
-) extends Config
-
-case class Field(
-  value: String
-) extends Config
-```
-
----
-
-## Configuration ADT
-
-```scala
-*sealed trait Config
-
-case class Section(
-  children: Map[String, Config]
-) extends Config
-
-case class Field(
-  value: String
-) extends Config
-```
-
----
-
-## Configuration ADT
-
-```scala
-sealed trait Config
-
-*case class Section(
-* children: Map[String, Config]
-*) extends Config
-
-case class Field(
-  value: String
-) extends Config
-```
-
----
-
-## Configuration ADT
-
-```scala
-sealed trait Config
-
-case class Section(
-  `children: Map[String, Config]`
-) extends Config
-
-case class Field(
-  value: String
-) extends Config
-```
-
----
-
-## Configuration ADT
-
-```scala
-sealed trait Config
-
-case class Section(
-  children: Map[String, Config]
-) extends Config
-
-*case class Field(
-* value: String
-*) extends Config
-```
-
----
-
-## Configuration ADT
-
-```scala
-sealed trait Config
-
-case class Section(
-  children: Map[String, Config]
-) extends Config
-
-case class Field(
-  `value: String`
-) extends Config
-```
-
----
-
-## Configuration ADT
-
+## Configuration data structure
 
 ```json
 {
   "auth": {
-    "token": "0xCAFEBABE"
+    "user"    : "psmith",
+    "password": "Tr0ub4dor&3"
   },
   "classifier": {
     "name"      : "news20",
@@ -2525,16 +2420,247 @@ case class Field(
 
 ---
 
-## Configuration ADT
+## Configuration data structure
+
+```json
+{
+  "auth": {
+    `"user"`    : "psmith",
+    "password": "Tr0ub4dor&3"
+  },
+  "classifier": {
+    "name"      : "news20",
+    "classCount": 20
+  }
+}
+```
+
+---
+
+## Configuration data structure
+
+```json
+{
+  "auth": {
+    "user"    : `"psmith"`,
+    "password": "Tr0ub4dor&3"
+  },
+  "classifier": {
+    "name"      : "news20",
+    "classCount": 20
+  }
+}
+```
+
+---
+
+## Configuration data structure
+
+```json
+{
+  `"auth"`: {
+    "user"    : "psmith",
+    "password": "Tr0ub4dor&3"
+  },
+  "classifier": {
+    "name"      : "news20",
+    "classCount": 20
+  }
+}
+```
+
+---
+
+## Configuration data structure
+
+```scala
+sealed trait Config
+
+case class Section(
+  children: Map[String, Config]
+) extends Config
+
+case class Value(
+  value: String
+) extends Config
+```
+
+---
+
+## Configuration data structure
+
+```scala
+*sealed trait Config
+
+case class Section(
+  children: Map[String, Config]
+) extends Config
+
+case class Value(
+  value: String
+) extends Config
+```
+
+---
+
+## Configuration data structure
+
+```scala
+sealed trait Config
+
+*case class Section(
+* children: Map[String, Config]
+*) extends Config
+
+case class Value(
+  value: String
+) extends Config
+```
+
+---
+
+## Configuration data structure
+
+```scala
+sealed trait Config
+
+case class Section(
+  children: Map[String, Config]
+) extends Config
+
+*case class Value(
+* value: String
+*) extends Config
+```
+
+---
+
+## Configuration data structure
+
+```scala
+sealed trait Config
+
+*case class Section(
+* children: Map[String, Config]
+*) extends Config
+
+case class Value(
+  value: String
+) extends Config
+```
+
+---
+
+## Configuration data structure
+
+```scala
+sealed trait Config
+
+case class Section(
+  `children: Map[String, Config]`
+) extends Config
+
+case class Value(
+  value: String
+) extends Config
+```
+
+---
+
+## Configuration data structure
+
+```scala
+sealed trait Config
+
+case class Section(
+  children: Map[String, Config]
+) extends Config
+
+*case class Value(
+* value: String
+*) extends Config
+```
+
+---
+
+## Configuration data structure
+
+```scala
+sealed trait Config
+
+case class Section(
+  children: Map[String, Config]
+) extends Config
+
+case class Value(
+  `value: String`
+) extends Config
+```
+
+---
+
+## Configuration data structure
 
 ```scala
 val conf = Section(Map(
   "auth" -> Section(Map(
-    "token" -> Field("0xCAFEBABE")
+    "user"     -> Value("psmith"),
+    "password" -> Value("Tr0ub4dor&3")
   )),
   "classifier" -> Section(Map(
-    "name"       -> Field("news20"),
-    "classCount" -> Field("20")
+    "name"       -> Value("news20"),
+    "classCount" -> Value("20")
+  ))
+))
+```
+
+---
+
+## Configuration data structure
+
+```scala
+val conf = Section(Map(
+  "auth" -> Section(Map(
+    `"user"`     -> Value("psmith"),
+    "password" -> Value("Tr0ub4dor&3")
+  )),
+  "classifier" -> Section(Map(
+    "name"       -> Value("news20"),
+    "classCount" -> Value("20")
+  ))
+))
+```
+
+---
+
+## Configuration data structure
+
+```scala
+val conf = Section(Map(
+  "auth" -> Section(Map(
+    "user"     -> `Value("psmith")`,
+    "password" -> Value("Tr0ub4dor&3")
+  )),
+  "classifier" -> Section(Map(
+    "name"       -> Value("news20"),
+    "classCount" -> Value("20")
+  ))
+))
+```
+
+---
+
+## Configuration data structure
+
+```scala
+val conf = Section(Map(
+  `"auth" -> Section`(Map(
+    "user"     -> Value("psmith"),
+    "password" -> Value("Tr0ub4dor&3")
+  )),
+  "classifier" -> Section(Map(
+    "name"       -> Value("news20"),
+    "classCount" -> Value("20")
   ))
 ))
 ```
@@ -2549,9 +2675,9 @@ val section = Prism.fromPartial[Config, Section](
   getter = { case a: Section => a }
 )
 
-val field = Prism.fromPartial[Config, Field](
+val field = Prism.fromPartial[Config, Value](
   setter = a => a,
-  getter = { case a: Field => a }
+  getter = { case a: Value => a }
 )
 ```
 
@@ -2565,9 +2691,9 @@ val section = `Prism`.fromPartial`[Config, Section]`(
   getter = { case a: Section => a }
 )
 
-val field = Prism.fromPartial[Config, Field](
+val field = Prism.fromPartial[Config, Value](
   setter = a => a,
-  getter = { case a: Field => a }
+  getter = { case a: Value => a }
 )
 ```
 
@@ -2581,9 +2707,9 @@ val section = Prism.fromPartial[Config, Section](
   getter = { case a: Section => a }
 )
 
-val field = `Prism`.fromPartial`[Config, Field]`(
+val field = `Prism`.fromPartial`[Config, Value]`(
   setter = a => a,
-  getter = { case a: Field => a }
+  getter = { case a: Value => a }
 )
 ```
 
@@ -2593,6 +2719,17 @@ val field = `Prism`.fromPartial`[Config, Field]`(
 
 ```scala
 def sectionChild(name: String) = Optional[Section, Config](
+  setter = (a, s) => Section(s.children + (name -> a)),
+  getter = s      => s.children.get(name)
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+def sectionChild(`name: String`) = Optional[Section, Config](
   setter = (a, s) => Section(s.children + (name -> a)),
   getter = s      => s.children.get(name)
 )
@@ -2619,6 +2756,51 @@ def sectionChild(name: String) = Optional[Section, Config](
   getter = s      => s.children.get(name)
 )
 ```
+
+---
+
+## Configuration optics
+
+```scala
+def sectionChild(name: String) = Optional[Section, Config](
+  setter = `(a, s)` => Section(s.children + (name -> a)),
+  getter = s      => s.children.get(name)
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+def sectionChild(name: String) = Optional[Section, Config](
+  setter = (a, s) => `Section`(s.children + (name -> a)),
+  getter = s      => s.children.get(name)
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+def sectionChild(name: String) = Optional[Section, Config](
+  setter = (a, s) => Section(`s.children` + (name -> a)),
+  getter = s      => s.children.get(name)
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+def sectionChild(name: String) = Optional[Section, Config](
+  setter = (a, s) => Section(s.children + `(name -> a)`),
+  getter = s      => s.children.get(name)
+)
+```
+
 ---
 
 ## Configuration optics
@@ -2632,12 +2814,78 @@ def sectionChild(name: String) = Optional[Section, Config](
 
 ---
 
+## Configuration optics
+
+```scala
+def sectionChild(name: String) = Optional[Section, Config](
+  setter = (a, s) => Section(s.children + (name -> a))`
+  getter = `s`      => s.children.get(name)
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+def sectionChild(name: String) = Optional[Section, Config](
+  setter = (a, s) => Section(s.children + (name -> a))`
+  getter = s      => `s.children.get(name)`
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+val identityOpt = Optional[Config, Config](
+  setter = (a, _) => a,
+  getter = s      => Some(s)
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+val identityOpt = `Optional[Config, Config]`(
+  setter = (a, _) => a,
+  getter = s      => Some(s)
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+val identityOpt = Optional[Config, Config](
+  setter = `(a, _) => a`,
+  getter = s      => Some(s)
+)
+```
+
+---
+
+## Configuration optics
+
+```scala
+val identityOpt = Optional[Config, Config](
+  setter = (a, _) => a,
+  getter = `s      => Some(s)`
+)
+```
+
+---
+
 ## ConfigPath
 
 ```scala
 case class ConfigPath(current: Optional[Config, Config]) {
 
-  val asField   = composeOP(current, field)
+  val asValue   = composeOP(current, field)
   val asSection = composeOP(current, section)
 
   def child(name: String) = ConfigPath(
@@ -2656,7 +2904,7 @@ case class ConfigPath(current: Optional[Config, Config]) {
 ```scala
 case class ConfigPath(`current: Optional[Config, Config]`) {
 
-  val asField   = composeOP(current, field)
+  val asValue   = composeOP(current, field)
   val asSection = composeOP(current, section)
 
   def child(name: String) = ConfigPath(
@@ -2675,7 +2923,7 @@ case class ConfigPath(`current: Optional[Config, Config]`) {
 ```scala
 case class ConfigPath(current: Optional[Config, Config]) {
 
-  `val asField   = composeOP(current, field)`
+  `val asValue   = composeOP(current, field)`
   val asSection = composeOP(current, section)
 
   def child(name: String) = ConfigPath(
@@ -2694,7 +2942,7 @@ case class ConfigPath(current: Optional[Config, Config]) {
 ```scala
 case class ConfigPath(current: Optional[Config, Config]) {
 
-  val asField   = composeOP(current, field)
+  val asValue   = composeOP(current, field)
   `val asSection = composeOP(current, section)`
 
   def child(name: String) = ConfigPath(
@@ -2713,7 +2961,7 @@ case class ConfigPath(current: Optional[Config, Config]) {
 ```scala
 case class ConfigPath(current: Optional[Config, Config]) {
 
-  val asField   = composeOP(current, field)
+  val asValue   = composeOP(current, field)
   val asSection = composeOP(current, section)
 
 * def child(name: String) = ConfigPath(
@@ -2730,10 +2978,18 @@ case class ConfigPath(current: Optional[Config, Config]) {
 ## ConfigPath
 
 ```scala
-val identityOpt = Optional[Config, Config](
-  setter = (a, _) => a,
-  getter = s      => Some(s)
-)
+case class ConfigPath(current: Optional[Config, Config]) {
+
+  val asValue   = composeOP(current, field)
+  val asSection = composeOP(current, section)
+
+  def child(`name: String`) = ConfigPath(
+    composeOO(
+      asSection,
+      sectionChild(name)
+    )
+  )
+}
 ```
 
 ---
@@ -2741,10 +2997,18 @@ val identityOpt = Optional[Config, Config](
 ## ConfigPath
 
 ```scala
-val identityOpt = `Optional[Config, Config]`(
-  setter = (a, _) => a,
-  getter = s      => Some(s)
-)
+case class ConfigPath(current: Optional[Config, Config]) {
+
+  val asValue   = composeOP(current, field)
+  val asSection = composeOP(current, section)
+
+  def child(name: String) = `ConfigPath`(
+    composeOO(
+      asSection,
+      sectionChild(name)
+    )
+  )
+}
 ```
 
 ---
@@ -2752,10 +3016,18 @@ val identityOpt = `Optional[Config, Config]`(
 ## ConfigPath
 
 ```scala
-val identityOpt = Optional[Config, Config](
-  setter = `(a, _) => a`,
-  getter = s      => Some(s)
-)
+case class ConfigPath(current: Optional[Config, Config]) {
+
+  val asValue   = composeOP(current, field)
+  val asSection = composeOP(current, section)
+
+  def child(name: String) = ConfigPath(
+*   composeOO(
+*     asSection,
+*     sectionChild(name)
+    )
+  )
+}
 ```
 
 ---
@@ -2763,37 +3035,11 @@ val identityOpt = Optional[Config, Config](
 ## ConfigPath
 
 ```scala
-val identityOpt = Optional[Config, Config](
-  setter = (a, _) => a,
-  getter = `s      => Some(s)`
-)
-```
-
----
-
-## ConfigPath
-
-```scala
-val identityOpt = Optional[Config, Config](
-  setter = (a, _) => a,
-  getter = s      => Some(s)
-)
-```
-
-```scala
-ConfigPath(identityOpt)
-```
-
----
-
-## ConfigPath
-
-```scala
-val classifierName: Optional[Config, Field] =
+val classifierName: Optional[Config, Value] =
   ConfigPath(identityOpt).
     child("classifier").
     child("name").
-    asField
+    asValue
 ```
 
 ---
@@ -2801,11 +3047,11 @@ val classifierName: Optional[Config, Field] =
 ## ConfigPath
 
 ```scala
-val classifierName: `Optional[Config, Field]` =
+val classifierName: `Optional[Config, Value]` =
   ConfigPath(identityOpt).
     child("classifier").
     child("name").
-    asField
+    asValue
 ```
 
 ---
@@ -2813,11 +3059,11 @@ val classifierName: `Optional[Config, Field]` =
 ## ConfigPath
 
 ```scala
-val classifierName: Optional[Config, Field] =
+val classifierName: Optional[Config, Value] =
   `ConfigPath(identityOpt)`.
     child("classifier").
     child("name").
-    asField
+    asValue
 ```
 
 ---
@@ -2825,11 +3071,11 @@ val classifierName: Optional[Config, Field] =
 ## ConfigPath
 
 ```scala
-val classifierName: Optional[Config, Field] =
+val classifierName: Optional[Config, Value] =
   ConfigPath(identityOpt).
     `child("classifier")`.
     child("name").
-    asField
+    asValue
 ```
 
 ---
@@ -2837,11 +3083,11 @@ val classifierName: Optional[Config, Field] =
 ## ConfigPath
 
 ```scala
-val classifierName: Optional[Config, Field] =
+val classifierName: Optional[Config, Value] =
   ConfigPath(identityOpt).
     child("classifier").
     `child("name")`.
-    asField
+    asValue
 ```
 
 ---
@@ -2849,76 +3095,11 @@ val classifierName: Optional[Config, Field] =
 ## ConfigPath
 
 ```scala
-val classifierName: Optional[Config, Field] =
+val classifierName: Optional[Config, Value] =
   ConfigPath(identityOpt).
     child("classifier").
     child("name").
-    `asField`
-```
-
----
-
-## Dynamic
-
-```scala
-import scala.language.dynamics
-
-object UpCase extends Dynamic {
-  def selectDynamic(missingMember: String): String =
-    missingMember.toUpperCase
-}
-```
-
----
-
-## Dynamic
-
-```scala
-import scala.language.dynamics
-
-object UpCase extends `Dynamic` {
-  def selectDynamic(missingMember: String): String =
-    missingMember.toUpperCase
-}
-```
-
----
-
-## Dynamic
-
-```scala
-import scala.language.dynamics
-
-object UpCase extends Dynamic {
-  def selectDynamic(`missingMember: String`): String =
-    missingMember.toUpperCase
-}
-```
-
----
-
-## Dynamic
-
-```scala
-import scala.language.dynamics
-
-object UpCase extends Dynamic {
-  `def selectDynamic(missingMember: String): String` =
-    missingMember.toUpperCase
-}
-```
-
----
-
-## Dynamic
-
-```scala
-import scala.language.dynamics
-
-object UpCase extends Dynamic {
-  def selectDynamic(missingMember: String): String =
-    `missingMember.toUpperCase`
-}
+    `asValue`
 ```
 
 ---
@@ -2936,7 +3117,126 @@ object UpCase extends Dynamic {
 
 ```scala
 UpCase.bar
-// res11: String = BAR
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object `UpCase` extends Dynamic {
+  def selectDynamic(missingMember: String): String =
+    missingMember.toUpperCase
+}
+```
+
+```scala
+UpCase.bar
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase `extends Dynamic` {
+  def selectDynamic(missingMember: String): String =
+    missingMember.toUpperCase
+}
+```
+
+```scala
+UpCase.bar
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase extends Dynamic {
+  def selectDynamic(missingMember: String): String =
+    missingMember.toUpperCase
+}
+```
+
+```scala
+&#x200B;`UpCase.bar`
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase extends Dynamic {
+  def selectDynamic(`missingMember: String`): String =
+    missingMember.toUpperCase
+}
+```
+
+```scala
+UpCase.bar
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase extends Dynamic {
+  def `selectDynamic`(missingMember: String): String =
+    missingMember.toUpperCase
+}
+```
+
+```scala
+UpCase.bar
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase extends Dynamic {
+  def selectDynamic(missingMember: String): String =
+    `missingMember.toUpperCase`
+}
+```
+
+```scala
+UpCase.bar
+```
+
+---
+
+## Dynamic
+
+```scala
+import scala.language.dynamics
+
+object UpCase extends Dynamic {
+  def selectDynamic(missingMember: String): String =
+    missingMember.toUpperCase
+}
+```
+
+```scala
+UpCase.bar
+// res6: String = BAR
 ```
 
 ---
@@ -2948,7 +3248,7 @@ case class ConfigPath(
     current: Optional[Config, Config]
   ) extends Dynamic {
 
-  val asField   = composeOP(current, field)
+  val asValue   = composeOP(current, field)
   val asSection = composeOP(current, section)
 
   def selectDynamic(child: String) = ConfigPath(
@@ -2969,7 +3269,7 @@ case class ConfigPath(
     current: Optional[Config, Config]
   ) `extends Dynamic` {
 
-  val asField   = composeOP(current, field)
+  val asValue   = composeOP(current, field)
   val asSection = composeOP(current, section)
 
   def selectDynamic(child: String) = ConfigPath(
@@ -2990,7 +3290,7 @@ case class ConfigPath(
     current: Optional[Config, Config]
   ) extends Dynamic {
 
-  val asField   = composeOP(current, field)
+  val asValue   = composeOP(current, field)
   val asSection = composeOP(current, section)
 
   `def selectDynamic(child: String)` = ConfigPath(
@@ -3011,7 +3311,7 @@ val classifierName =
   ConfigPath(identityOpt).
     classifier.
     name.
-    asField
+    asValue
 ```
 
 ---
@@ -3023,7 +3323,55 @@ val classifierName =
   `ConfigPath(identityOpt)`.
     classifier.
     name.
-    asField
+    asValue
+```
+
+---
+
+## Dynamic ConfigPath
+
+```scala
+val classifierName =
+  ConfigPath(identityOpt).
+    `classifier`.
+    name.
+    asValue
+```
+
+---
+
+## Dynamic ConfigPath
+
+```scala
+val classifierName =
+  ConfigPath(identityOpt).
+    classifier.
+    `name`.
+    asValue
+```
+
+---
+
+## Dynamic ConfigPath
+
+```scala
+val classifierName =
+  ConfigPath(identityOpt).
+    classifier.
+    name.
+    `asValue`
+```
+
+---
+
+## Dynamic ConfigPath
+
+```scala
+val classifierName =
+  `ConfigPath(identityOpt)`.
+    classifier.
+    name.
+    asValue
 ```
 
 ---
@@ -3034,44 +3382,65 @@ val classifierName =
 val root = ConfigPath(identityOpt)
 ```
 
---
+---
+
+## Dynamic ConfigPath
+
 ```scala
-val classifierName = root.classifier.name.asField
+val classifierName =
+  root.
+    classifier.
+    name.
+    asValue
 ```
 
 --
+
 ```scala
-classifierName.set(Field("NEWS20"))(conf)
-// res12: Config = Section(Map(auth -> Section(Map(token -> Field(0xCAFEBABE))), classifier -> Section(Map(name -> Field(NEWS20), classCount -> Field(20)))))
+classifierName.set(Value("NEWS20"))(conf)
+// res7: Config = Section(Map(auth -> Section(Map(user -> Value(psmith), password -> Value(Tr0ub4dor&3))), classifier -> Section(Map(name -> Value(NEWS20), classCount -> Value(20)))))
 ```
 
 ---
 ## Key takeaway
 
-Optics can be used for more than just exploring "simple" ADTs
+--
+
+Optics work not only with ADTs, but with any nested immutable data structure.
 
 ---
 class: center, middle
 
-# Wrapping things up
+# In closing
 
 ---
 
 ## If you only remember 1 slide...
 
-* Lenses are used to drill down arbitrarily deep in nested product types
-* Prisms are used to explore sum types
-* They compose into optionals
-* You do not need to understand the theory (but it's beautiful)
+--
+
+* Lenses are used to drill down arbitrarily deep in nested product types.
+--
+
+* Prisms are used to explore sum types.
+--
+
+* They compose into optionals.
+--
+
+* You can use optics to navigate any immutable nested data structure.
 
 ---
 class: center, middle
 
 # Questions?
+Nicolas Rinaudo • [@NicolasRinaudo] • [Besedo]
 
-[scalaz]:https://scalaz.github.io/7/
-[shapeless]:https://github.com/milessabin/shapeless
-[Monocle]:https://github.com/julien-truffaut/Monocle
+---
+## Bonus Material!
+
+* [What are the available libraries?](./libraries.html)
+
 [Besedo]:https://twitter.com/besedo_official
 [@NicolasRinaudo]:https://twitter.com/NicolasRinaudo
 
