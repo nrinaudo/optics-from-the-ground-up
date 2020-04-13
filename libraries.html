@@ -11,8 +11,6 @@
 
 
 
-
-
 class: center, middle
 
 # Optics libraries
@@ -130,8 +128,8 @@ val classifierName = `classifierLens andThen nameLens`
 ## Scalaz
 
 ```scala
-classifierName.set(service, "news_20")
-// res0: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
+classifierName.mod(_.toUpperCase, service)
+// res0: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(NEWS20,20))
 ```
 
 ---
@@ -163,11 +161,71 @@ val userName = lens[MlService].auth.user
 ## Shapeless
 
 ```scala
-classifierName.set(service)("news_20")
-// res1: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
+classifierName.modify(service)(_.toUpperCase)
+// res1: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(NEWS20,20))
 
 userName.set(service)("psmith")
 // res2: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
+```
+
+---
+
+## Quicklens
+
+```scala
+import com.softwaremill.quicklens._
+
+val classifierName = modify[MlService](_.classifier.name)
+
+val userName = modify[MlService](_.auth.when[Login].user)
+```
+
+---
+
+## Quicklens
+
+```scala
+import com.softwaremill.quicklens._
+
+val classifierName = `modify[MlService](_.classifier.name)`
+
+val userName = modify[MlService](_.auth.when[Login].user)
+```
+
+---
+
+## Quicklens
+
+```scala
+import com.softwaremill.quicklens._
+
+val classifierName = modify[MlService](_.classifier.name)
+
+val userName = `modify[MlService](_.auth.when[Login].user)`
+```
+
+---
+
+## Quicklens
+
+```scala
+import com.softwaremill.quicklens._
+
+val classifierName = modify[MlService](_.classifier.name)
+
+val userName = modify[MlService](_.auth.`when[Login]`.user)
+```
+
+---
+
+## Quicklens
+
+```scala
+classifierName.using(_.toUpperCase)(service)
+// res3: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(NEWS20,20))
+
+userName.setTo("psmith")(service)
+// res4: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
 ---
@@ -231,11 +289,11 @@ val userName = GenLens[MlService](_.auth).
 ## Monocle
 
 ```scala
-classifierName.set("news_20")(service)
-// res3: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(news_20,20))
+classifierName.modify(_.toUpperCase)(service)
+// res5: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(NEWS20,20))
 
 userName.set("psmith")(service)
-// res4: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
+// res6: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
 ---
