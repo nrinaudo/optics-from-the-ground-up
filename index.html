@@ -270,10 +270,10 @@ case class MlService(
 
 --
 
-* Product types aggregate types with an `⋀`.
+* Product types aggregate values with an `⋀`.
 --
 
-* Sum types aggregate types with an `⋁`.
+* Sum types aggregate values with an `⋁`.
 --
 
 * ADTs are nested sum and product types.
@@ -1137,24 +1137,20 @@ val serviceClassifierName = composeLL(
 ## Service → Classifier → name
 
 ```scala
-serviceClassifierName.set("NEWS20")(service)
-// res2: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(NEWS20,20))
-```
-
---
-
-```scala
 serviceClassifierName.modify(_.toUpperCase)(service)
-// res3: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(NEWS20,20))
+// res2: MlService = MlService(Login(jsmith,Tr0ub4dor&3),Classifier(NEWS20,20))
 ```
 
 ---
 
-## Key takeaway
+## Key takeaways
 
 --
 
-Lenses are used to drill down arbitrarily deep in nested product types.
+* Lenses are used to focus on specific parts of a product type.
+--
+
+* They compose to build arbitrarily deep paths in nested structures.
 
 ---
 
@@ -2389,7 +2385,7 @@ val serviceUser = composeOL(
 
 ```scala
 serviceUser.set("psmith")(service)
-// res4: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
+// res3: MlService = MlService(Login(psmith,Tr0ub4dor&3),Classifier(news20,20))
 ```
 
 ---
@@ -3243,7 +3239,7 @@ object UpCase extends Dynamic {
 
 ```scala
 UpCase.bar
-// res6: String = BAR
+// res5: String = BAR
 ```
 
 ---
@@ -3406,8 +3402,8 @@ val classifierName =
 ## Dynamic ConfigPath
 
 ```scala
-classifierName.set(Value("NEWS20"))(conf)
-// res7: Config = Section(Map(auth -> Section(Map(user -> Value(psmith), password -> Value(Tr0ub4dor&3))), classifier -> Section(Map(name -> Value(NEWS20), classCount -> Value(20)))))
+classifierName.get(conf)
+// res6: Option[Value] = Some(Value(news20))
 ```
 
 ---
