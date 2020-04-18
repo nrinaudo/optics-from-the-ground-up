@@ -1,8 +1,8 @@
 Talk abstract and description can be consulted [here](./ABSTRACT_EN.md) (EN).
 
-Slides can be consulted online. There are two versions:
-* ["live"](https://nrinaudo.github.io/optics-from-the-ground-up/) (the ones I use when giving a talk)
-* [annotated](https://nrinaudo.github.io/optics-from-the-ground-up/annotated.html) (hopefully mostly understandable without me to explain)
+Slides are available [online](https://nrinaudo.github.io/optics-from-the-ground-up/), but the [companion article](https://nrinaudo.github.io/optics/) is probably easier to make sense of.
+
+
 
 You can also view recordings of this talk:
 * at [f(by)](https://www.youtube.com/watch?v=sPivyXqQ25s) (EN).
