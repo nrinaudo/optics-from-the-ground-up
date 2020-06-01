@@ -2763,17 +2763,6 @@ def sectionChild(name: String) = Optional[Section, Config](
 
 ```scala
 def sectionChild(name: String) = Optional[Section, Config](
-  setter = `(a, s)` => Section(s.children + (name -> a)),
-  getter = s      => s.children.get(name)
-)
-```
-
----
-
-## Configuration optics
-
-```scala
-def sectionChild(name: String) = Optional[Section, Config](
   setter = (a, s) => `Section`(s.children + (name -> a)),
   getter = s      => s.children.get(name)
 )
@@ -2807,7 +2796,7 @@ def sectionChild(name: String) = Optional[Section, Config](
 
 ```scala
 def sectionChild(name: String) = Optional[Section, Config](
-  setter = (a, s) => Section(s.children + (name -> a))`
+  setter = (a, s) => Section(s.children + (name -> a)),
   getter = `s      => s.children.get(name)`
 )
 ```
@@ -2818,18 +2807,7 @@ def sectionChild(name: String) = Optional[Section, Config](
 
 ```scala
 def sectionChild(name: String) = Optional[Section, Config](
-  setter = (a, s) => Section(s.children + (name -> a))`
-  getter = `s`      => s.children.get(name)
-)
-```
-
----
-
-## Configuration optics
-
-```scala
-def sectionChild(name: String) = Optional[Section, Config](
-  setter = (a, s) => Section(s.children + (name -> a))`
+  setter = (a, s) => Section(s.children + (name -> a)),
   getter = s      => `s.children.get(name)`
 )
 ```
