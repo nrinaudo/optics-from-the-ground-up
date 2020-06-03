@@ -1784,11 +1784,13 @@ def composeLP[S, A, B](
 
   // B => S
   setter = b => {
+    val a: A = p.set(b)
     val s: S = ???
-    l.set(p.set(b))(s)
+    s
   },
 
-  getter = s => ???
+  // S => B
+  getter = s => p.get(l.get(s))
 )
 ```
 
@@ -1804,11 +1806,13 @@ def composeLP[S, A, B](
 
 * // B => S
 * setter = b => {
+*   val a: A = p.set(b)
 *   val s: S = ???
-*   l.set(p.set(b))(s)
+*   s
 * },
 
-  getter = s => ???
+  // S => B
+  getter = s => p.get(l.get(s))
 )
 ```
 
@@ -1824,11 +1828,13 @@ def composeLP[S, A, B](
 
   // `B` => S
   setter = `b` => {
+    val a: A = p.set(b)
     val s: S = ???
-    l.set(p.set(b))(s)
+    s
   },
 
-  getter = s => ???
+  // S => B
+  getter = s => p.get(l.get(s))
 )
 ```
 
@@ -1844,11 +1850,79 @@ def composeLP[S, A, B](
 
   // B => `S`
   setter = b => {
-    val `s: S = ???`
-    l.set(p.set(b))(s)
+    val a: A = p.set(b)
+    val s: S = ???
+    `s`
   },
 
-  getter = s => ???
+  // S => B
+  getter = s => p.get(l.get(s))
+)
+```
+
+---
+
+## Lens ∘ Prism ≟ Prism
+
+```scala
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = Prism[S, B](
+
+  // B => S
+  setter = b => {
+    `val a: A = p.set(b)`
+    val s: S = ???
+    s
+  },
+
+  // S => B
+  getter = s => p.get(l.get(s))
+)
+```
+
+---
+
+## Lens ∘ Prism ≟ Prism
+
+```scala
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = Prism[S, B](
+
+  // B => S
+  setter = b => {
+    val a: A = p.set(b)
+    `val s: S = ???`
+    s
+  },
+
+  // S => B
+  getter = s => p.get(l.get(s))
+)
+```
+
+---
+
+## Lens ∘ Prism ≟ Prism
+
+```scala
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = Prism[S, B](
+
+  // B => S
+  setter = b => {
+    val a: A = p.set(b)
+    val s: S = ???
+    s
+  },
+
+* // S => B
+* getter = s => p.get(l.get(s))
 )
 ```
 
@@ -1862,11 +1936,12 @@ def composeLP[S, A, B](
   p: Prism[A, B]
 ) = Lens[S, B](
 
-  setter = (b, s) => ???,
+  // (B, S) => S
+  setter = (b, s) => l.set(p.set(b))(s),
 
   // S => B
   getter = s => {
-    val ob: Option[B] = p.get(l.get(s))
+    val a: A = l.get(s)
     val b: B = ???
     b
   }
@@ -1883,11 +1958,34 @@ def composeLP[S, A, B](
   p: Prism[A, B]
 ) = Lens[S, B](
 
-  setter = (b, s) => ???,
+* // (B, S) => S
+* setter = (b, s) => l.set(p.set(b))(s),
+
+  // S => B
+  getter = s => {
+    val a: A = l.get(s)
+    val b: B = ???
+    b
+  }
+)
+```
+
+---
+
+## Lens ∘ Prism ≟ Lens
+
+```scala
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = Lens[S, B](
+
+  // (B, S) => S
+  setter = (b, s) => l.set(p.set(b))(s),
 
 * // S => B
 * getter = s => {
-*   val ob: Option[B] = p.get(l.get(s))
+*   val a: A = l.get(s)
 *   val b: B = ???
 *   b
 * }
@@ -1904,11 +2002,12 @@ def composeLP[S, A, B](
   p: Prism[A, B]
 ) = Lens[S, B](
 
-  setter = (b, s) => ???,
+  // (B, S) => S
+  setter = (b, s) => l.set(p.set(b))(s),
 
   // `S` => B
   getter = `s` => {
-    val ob: Option[B] = p.get(l.get(s))
+    val a: A = l.get(s)
     val b: B = ???
     b
   }
@@ -1925,12 +2024,57 @@ def composeLP[S, A, B](
   p: Prism[A, B]
 ) = Lens[S, B](
 
-  setter = (b, s) => ???,
+  // (B, S) => S
+  setter = (b, s) => l.set(p.set(b))(s),
 
   // S => `B`
   getter = s => {
-    val ob: Option[B] = p.get(l.get(s))
-    val `b: B = ???`
+    val a: A = l.get(s)
+    val b: B = ???
+    `b`
+  }
+)
+```
+
+---
+
+## Lens ∘ Prism ≟ Lens
+
+```scala
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = Lens[S, B](
+
+  // (B, S) => S
+  setter = (b, s) => l.set(p.set(b))(s),
+
+  // S => B
+  getter = s => {
+    `val a: A = l.get(s)`
+    val b: B = ???
+    b
+  }
+)
+```
+
+---
+
+## Lens ∘ Prism ≟ Lens
+
+```scala
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = Lens[S, B](
+
+  // (B, S) => S
+  setter = (b, s) => l.set(p.set(b))(s),
+
+  // S => B
+  getter = s => {
+    val a: A = l.get(s)
+    `val b: B = ???`
     b
   }
 )
@@ -2205,6 +2349,20 @@ object Optional {
 
 ---
 
+## Lens ∘ Prism = Optional
+
+```tut:silent
+def composeLP[S, A, B](
+  l: Lens[S, A],
+  p: Prism[A, B]
+) = Optional[S, B](
+  setter = (b, s) => l.set(p.set(b))(s),
+  getter = s      => p.get(l.get(s))
+)
+```
+
+---
+
 class: center, middle
 
 # Intermission: composition galore
@@ -2234,20 +2392,6 @@ def composePL[S, A, B](
 ) = Optional[S, B](
   setter = (b, s) => p.modify(l.set(b))(s),
   getter = s      => p.get(s).map(l.get)
-)
-```
-
----
-
-## Lens ∘ Prism = Optional
-
-```tut:silent
-def composeLP[S, A, B](
-  l: Lens[S, A],
-  p: Prism[A, B]
-) = Optional[S, B](
-  setter = (b, s) => l.set(p.set(b))(s),
-  getter = s      => p.get(l.get(s))
 )
 ```
 
