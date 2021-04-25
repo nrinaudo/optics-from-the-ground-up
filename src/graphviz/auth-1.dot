@@ -2,20 +2,17 @@ digraph {
     bgcolor=transparent
 
     // Default theme
-    node[shape="rectangle" style="rounded,filled" color="#dddddd" fontname="Segoe UI,Roboto,Helvetica,Arial,sans-serif" fillcolor="#ffffff" fontcolor="#dddddd"]
-    edge [color="#dddddd" fontcolor="#dddddd"]
+    node[shape="rectangle" style="rounded,filled" color="#586E75" fillcolor="#ffffff" fontcolor="#586E75" fontname="Inter,Arial"]
+    edge[color="#586E75" fontcolor="#586E75" fontname="Inter,Arial" fontsize=11]
 
     // sum types
-    auth[shape=invtrapezium, style=filled fillcolor="#b2ebf2"]
-
-    // Lit nodes
-    auth [color="#2980B9", fontcolor="#000000"]
+    auth[shape=invtrapezium, style=filled fillcolor="#C8DEE5"]
 
     auth[label=Auth]
 
-    login[label=Login]
-    token[label=Token]
+    login[label=Login color="#dddddd" fontcolor="#eeeeee"]
+    token[label=Token color="#dddddd" fontcolor="#eeeeee"]
 
-    auth -> token[style=dashed]
-    auth -> login[style=dashed]
+    auth -> token[style=dashed color="#dddddd" fontcolor="#dddddd"]
+    auth -> login[style=dashed color="#dddddd" fontcolor="#dddddd"]
 }

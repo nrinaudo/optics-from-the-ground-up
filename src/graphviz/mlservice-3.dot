@@ -2,19 +2,14 @@ digraph {
     bgcolor=transparent
 
     // Default theme
-    node[shape="rectangle" style="rounded,filled" color="#2980B9" fontname="Segoe UI,Roboto,Helvetica,Arial,sans-serif" fillcolor="#ffffff" fontcolor="#000000"]
-    edge [color="#2980B9" fontcolor="#000000"]
+    node[shape="rectangle" style="rounded,filled" color="#586E75" fillcolor="#ffffff" fontcolor="#586E75" fontname="Inter,Arial"]
+    edge[color="#586E75" fontcolor="#586E75" fontname="Inter,Arial" fontsize=11]
 
     // product types
-    mlService, classifier, login, token [shape=trapezium style=filled fillcolor="#e1f5fe"]
+    mlService, classifier, login, token [shape=trapezium style=filled fillcolor="#C8DEE5"]
 
     // sum types
-    auth[shape=invtrapezium, style=filled fillcolor="#b2ebf2"]
-
-    // Lit nodes
-    mlService, classifier, classifier_name [color="#2980B9", fontcolor="#000000"]
-    mlService, classifier [fillcolor="#e1f5fe"]
-
+    auth[shape=invtrapezium, style=filled fillcolor="#C8DEE5"]
 
     mlService[label=MlService]
 
@@ -31,16 +26,16 @@ digraph {
     token[label=Token]
     token_token[label=String shape=box style=invis]
 
-    mlService -> classifier [label=classifier]
-    mlService -> auth [label=auth]
+    mlService -> classifier[label=classifier]
+    mlService -> auth[label=auth]
 
-    classifier -> classifier_name [label=name]
-    classifier -> classifier_classCount [label=classCount]
+    classifier -> classifier_name[label=name]
+    classifier -> classifier_classCount[label=classCount]
 
-    token -> token_token [label=token style=invis]
+    token -> token_token[label=token style=invis]
 
-    login -> login_user [label=user style=invis]
-    login -> login_password [label=password style=invis]
+    login -> login_user[label=user style=invis]
+    login -> login_password[label=password style=invis]
 
     auth -> token[style=dashed]
     auth -> login[style=dashed]

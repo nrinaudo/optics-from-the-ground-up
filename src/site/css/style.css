@@ -1,43 +1,30 @@
 @import './fira_code/fira_code.css';
+@import './inter/inter.css';
 
 body {
-    /* I like the way https://plfa.github.io/ looks, so I basically stole this magical incantation. */
-    font          : 400 16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-    margin        : 0;
-	padding       : 0;
-	border        : 0;
+    font:           400 16px/1.5 'Inter';
+    margin:         0;
+	padding:        0;
+	border:         0;
 	vertical-align: baseline;
 }
 
 .remark-inline-code, .remark-code {
-    font-family: "Fira Code";
-    color      : #586e75;
-    background : #fdf6e3;
+    font-family:  "Fira Code";
+    color:         #586e75;
 }
 
 a .remark-inline-code {
     color: #268bd2;
 }
 
-.remark-inline-code {
-    border       : 1px solid #eee8d5;
-    font-size    : 0.9em;
-    padding      : 2px 5px 2px 5px;
-    border-radius: 5px;
-}
-
-h1 .remark-inline-code, h2 .remark-inline-code, h3 .remark-inline-code {
-    font-weight: normal;
-}
-
 .remark-code {
     border-radius: 5px;
-    border       : 1px solid #dfdedc;
-    white-space  : pre-wrap;       /* CSS 3 */
-    white-space  : -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space  : -pre-wrap;      /* Opera 4-6 */
-    white-space  : -o-pre-wrap;    /* Opera 7 */
-    word-wrap    : break-word;     /* Internet Explorer 5.5+ */
+    white-space:   pre-wrap;       /* CSS 3 */
+    white-space:   -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space:   -pre-wrap;      /* Opera 4-6 */
+    white-space:   -o-pre-wrap;    /* Opera 7 */
+    word-wrap:     break-word;       /* Internet Explorer 5.5+ */
 }
 
 .remark-slide-content, .remark-slide-container {
@@ -49,12 +36,13 @@ h1 .remark-inline-code, h2 .remark-inline-code, h3 .remark-inline-code {
 }
 
 h1, h2, h3, .section {
-    color: #2980b9;
+    color:       #111111;
+    line-height: 100%;
 }
 
 .super {
     vertical-align: super;
-    font-size     : .5em;
+    font-size:      .5em;
 }
 
 .section {
@@ -65,42 +53,111 @@ h1, h2, h3, .section {
     content: ":";
 }
 
-h2, h3 {
-    border-bottom: 1px solid #2980b9;
+h2 {
+    margin: 32px 0;
+    font-weight: 100;
 }
 
 a {
-    color:           #2980b9;
+    color:           #111111;
     text-decoration: none;
 }
 
 blockquote {
-  background                : #f9f9f9;
-  border-left               : 10px solid #dfdedc;
-  margin                    : 1.5em 10px;
-  padding                   : 0.5em 10px;
-  quotes                    : "\201C""\201D""\2018""\2019";
-  color                     : #5f5e5c;
-  border-top-right-radius   : 5px;
+  background:                 #f9f9f9;
+  border-left:                10px solid #dfdedc;
+  margin:                     1.5em 0;
+  padding:                    0.5em 10px;
+  quotes:                     "\201C""\201D""\2018""\2019";
+  color:                      #5f5e5c;
+  border-top-right-radius:    5px;
   border-bottom-right-radius: 5px;
 }
 
-blockquote p {
-  display: inline;
+blockquote p:first-child {
+    margin-top: 0;
 }
 
-/* Comments tend to be huge - stack traces and compiler errors. This makes them more readable. */
-.hljs-comment {
-    font-size: .85em;
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+table {
+    border-collapse: collapse;
+    background:      #fff;
+    width:           100%;
+}
+
+th {
+    background: #586E75;
+    color:      #ecf0f4;
+}
+
+th .highlight {
+    color: #586E75;
+}
+
+th, td {
+    border:     1px solid #ecf0f4;
+    padding:    5px 10px 5px 10px;
+    text-align: center
+}
+
+/** Relatively nasty fix to fix cell width when a table appears bit by bit. */
+
+.fix2 td, .fix2 th  {
+  width: 50%;
+}
+
+.fix3 td, .fix3 th  {
+  width: 33%;
+}
+
+
+th:empty, td:empty {
+    background: #ecf0f4;
+    padding:    0;
+    width:      4px;
+}
+
+th .remark-inline-code {
+    border:        none;
+    background:    none;
+    color:         #fff;
+}
+
+.fright {
+    float: right;
+}
+
+.fleft {
+    float: left;
+}
+
+.foreground {
+    float: right;
+    position: absolute;
+    right: -0px;
+    top: -50px;
 }
 
 .remark-slide-number {
     display: none;
 }
 
-.remark-code-span-highlighted, .remark-code-line-highlighted {
+.remark-code-span-highlighted, .remark-code-line-highlighted, .highlight {
     padding         : 0;
-    background-color: #02ebf2;
+    background-color: #ffca40;
+}
+
+.highlight {
+    padding-bottom  : 1px;
+}
+
+.highlight .remark-inline-code, .highlight .remark-code {
+    color:         inherit;
+    background:    inherit;
+    padding-bottom: 0;
 }
 
 .annotated img {
@@ -108,4 +165,36 @@ blockquote p {
     position: absolute;
     right   : 100px;
     top     : 100px;
+}
+
+img {
+    max-width: 100%;
+}
+
+.diff-rm .remark-code-span-highlighted {
+    background-color: #fdb8c0;
+}
+
+.diff-rm .remark-code-line-highlighted {
+    background-color: #ffeef0;
+    position: relative;
+}
+
+.diff-add .remark-code-span-highlighted {
+    background-color: #acf2bd;
+}
+
+.diff-add .remark-code-line-highlighted {
+    background-color: #e6ffed;
+    position: relative;
+}
+
+.coverage-on .remark-code-line-highlighted {
+    background-color: #acf2bd;
+    position: relative;
+}
+
+.coverage-off .remark-code-line-highlighted {
+    background-color: #fdb8c0;
+    position: relative;
 }

@@ -2,16 +2,16 @@ digraph {
     bgcolor=transparent
 
     // Default theme
-    node[shape="rectangle" style="rounded,filled" color="#dddddd" fontname="Segoe UI,Roboto,Helvetica,Arial,sans-serif" fillcolor="#ffffff" fontcolor="#dddddd"]
-    edge [color="#dddddd" fontcolor="#dddddd"]
+    node[shape="rectangle" style="rounded,filled" color="#586E75" fillcolor="#ffffff" fontcolor="#586E75" fontname="Inter,Arial"]
+    edge[color="#586E75" fontcolor="#586E75" fontname="Inter,Arial" fontsize=11]
 
     // product types
-    classifier [shape=trapezium style=filled fillcolor="#e1f5fe"]
+    classifier[shape=trapezium style=filled fillcolor="#FEFEFE"]
 
-    classifier[label=Classifier]
-    classifier_name[label=String shape=box]
-    classifier_classCount[label=Int shape=box]
+    classifier[label=Classifier color="#dddddd" fontcolor="#eeeeee"]
+    classifier_name[label=String shape=box color="#dddddd" fontcolor="#eeeeee"]
+    classifier_classCount[label=Int shape=box color="#dddddd" fontcolor="#eeeeee"]
 
-    classifier -> classifier_name [label=name color="#2980B9" fontcolor="#000000"]
-    classifier -> classifier_classCount [label=classCount]
+    classifier -> classifier_name[label=name]
+    classifier -> classifier_classCount[label=classCount color="#dddddd" fontcolor="#dddddd"]
 }
