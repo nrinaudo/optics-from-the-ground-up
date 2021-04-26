@@ -32,7 +32,7 @@ digraph {
     classifier -> classifier_name[label=name]
     classifier -> classifier_classCount[label=classCount color="#dddddd" fontcolor="#dddddd"]
 
-    token -> token_token[label=token color="#dddddd" fontcolor="#eeeeee"]
+    token -> token_token[label=token color="#dddddd" fontcolor="#dddddd"]
 
     login -> login_user[label=user color="#dddddd" fontcolor="#dddddd"]
     login -> login_password[label=password color="#dddddd" fontcolor="#dddddd"]
