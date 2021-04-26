@@ -1,10 +1,12 @@
 digraph {
     bgcolor=transparent
-    node[shape="rectangle" style="rounded,filled" color="#2980B9" fontname="Segoe UI,Roboto,Helvetica,Arial,sans-serif" fillcolor="#ffffff" fontcolor="#000000"]
-    edge [color="#2980B9" fontcolor="#000000"]
+
+    // Default theme
+    node[shape="rectangle" style="rounded,filled" color="#586E75" fillcolor="#ffffff" fontcolor="#586E75" fontname="Inter,Arial"]
+    edge[color="#586E75" fontcolor="#586E75" fontname="Inter,Arial" fontsize=11]
 
     // sum types
-    auth[shape=invtrapezium, style=filled fillcolor="#b2ebf2"]
+    auth[shape=invtrapezium, style=filled fillcolor="#C8DEE5"]
 
     auth[label=Auth]
 
