@@ -115,7 +115,7 @@
 <title>token&#45;&gt;token_token</title>
 <path fill="none" stroke="#dddddd" d="M327,-83.61C327,-72.77 327,-58.6 327,-46.29"/>
 <polygon fill="#dddddd" stroke="#dddddd" points="330.5,-46.08 327,-36.08 323.5,-46.08 330.5,-46.08"/>
-<text text-anchor="middle" x="342.5" y="-57.2" font-family="Inter,Arial" font-size="11.00" fill="#eeeeee">token</text>
+<text text-anchor="middle" x="342.5" y="-57.2" font-family="Inter,Arial" font-size="11.00" fill="#dddddd">token</text>
 </g>
 <!-- auth&#45;&gt;login -->
 <g id="edge9" class="edge">
