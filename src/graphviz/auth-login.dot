@@ -6,14 +6,14 @@ digraph {
     edge[color="#586E75" fontcolor="#586E75" fontname="Inter,Arial" fontsize=11]
 
     // product types
-    mlService, classifier, login, token [shape=trapezium style=filled fillcolor="#C8DEE5"]
+    mlService, classifier, login, token [shape=trapezium style=filled fontcolor="#FFFFFF" fillcolor="#586E75"]
 
     // sum types
-    auth[shape=invtrapezium, style=filled fillcolor="#C8DEE5"]
+    auth[shape=invtrapezium, style=filled fontcolor="#FFFFFF" fillcolor="#586E75"]
 
-    mlService[label=MlService color="#dddddd" fontcolor="#eeeeee" fillcolor="#fefefe"]
+    mlService[label=MlService fillcolor="#dddddd" color="#dddddd" fontcolor="#eeeeee"]
 
-    classifier[label=Classifier color="#dddddd" fontcolor="#eeeeee" fillcolor="#fefefe"]
+    classifier[label=Classifier fillcolor="#dddddd" color="#dddddd" fontcolor="#eeeeee"]
     classifier_name[label=String shape=box color="#dddddd" fontcolor="#eeeeee"]
     classifier_classCount[label=Int shape=box color="#dddddd" fontcolor="#eeeeee"]
 
@@ -23,7 +23,7 @@ digraph {
     login_user[label=String shape=box color="#dddddd" fontcolor="#eeeeee"]
     login_password[label=String shape=box color="#dddddd" fontcolor="#eeeeee"]
 
-    token[label=Token color="#dddddd" fontcolor="#eeeeee" fillcolor="#fefefe"]
+    token[label=Token fillcolor="#dddddd" color="#dddddd" fontcolor="#eeeeee"]
     token_token[label=String shape=box color="#dddddd" fontcolor="#eeeeee"]
 
     mlService -> classifier[label=classifier color="#dddddd" fontcolor="#dddddd"]

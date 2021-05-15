@@ -6,7 +6,7 @@ digraph {
     edge[color="#586E75" fontcolor="#586E75" fontname="Inter,Arial" fontsize=11]
 
     // product types
-    classifier[shape=trapezium style=filled fillcolor="#C8DEE5"]
+    classifier[shape=trapezium style=filled fontcolor="#FFFFFF" fillcolor="#586E75"]
 
     classifier[label=Classifier]
     classifier_name[label=String shape=box]
