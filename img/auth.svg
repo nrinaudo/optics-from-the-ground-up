@@ -11,8 +11,8 @@
 <!-- auth -->
 <g id="node1" class="node">
 <title>auth</title>
-<polygon fill="#c8dee5" stroke="#586e75" points="37.16,-72 88.84,-72 107.24,-108 18.76,-108 37.16,-72"/>
-<text text-anchor="middle" x="63" y="-86.3" font-family="Inter,Arial" font-size="14.00" fill="#586e75">Auth</text>
+<polygon fill="#586e75" stroke="#586e75" points="37.16,-72 88.84,-72 107.24,-108 18.76,-108 37.16,-72"/>
+<text text-anchor="middle" x="63" y="-86.3" font-family="Inter,Arial" font-size="14.00" fill="#ffffff">Auth</text>
 </g>
 <!-- login -->
 <g id="node2" class="node">

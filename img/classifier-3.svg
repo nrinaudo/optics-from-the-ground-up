@@ -11,7 +11,7 @@
 <!-- classifier -->
 <g id="node1" class="node">
 <title>classifier</title>
-<polygon fill="#fefefe" stroke="#dddddd" points="113.68,-120 29.71,-120 -0.19,-84 143.58,-84 113.68,-120"/>
+<polygon fill="#dddddd" stroke="#dddddd" points="113.68,-120 29.71,-120 -0.19,-84 143.58,-84 113.68,-120"/>
 <text text-anchor="middle" x="71.69" y="-98.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">Classifier</text>
 </g>
 <!-- classifier_name -->

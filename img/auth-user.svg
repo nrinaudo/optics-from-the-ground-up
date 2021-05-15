@@ -11,13 +11,13 @@
 <!-- mlService -->
 <g id="node1" class="node">
 <title>mlService</title>
-<polygon fill="#fefefe" stroke="#dddddd" points="218.45,-288 131.55,-288 100.6,-252 249.4,-252 218.45,-288"/>
+<polygon fill="#dddddd" stroke="#dddddd" points="218.45,-288 131.55,-288 100.6,-252 249.4,-252 218.45,-288"/>
 <text text-anchor="middle" x="175" y="-266.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">MlService</text>
 </g>
 <!-- classifier -->
 <g id="node2" class="node">
 <title>classifier</title>
-<polygon fill="#fefefe" stroke="#dddddd" points="150.98,-204 67.02,-204 37.11,-168 180.89,-168 150.98,-204"/>
+<polygon fill="#dddddd" stroke="#dddddd" points="150.98,-204 67.02,-204 37.11,-168 180.89,-168 150.98,-204"/>
 <text text-anchor="middle" x="109" y="-182.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">Classifier</text>
 </g>
 <!-- mlService&#45;&gt;classifier -->
@@ -30,8 +30,8 @@
 <!-- auth -->
 <g id="node5" class="node">
 <title>auth</title>
-<polygon fill="#c8dee5" stroke="#586e75" points="223.16,-168 274.84,-168 293.24,-204 204.76,-204 223.16,-168"/>
-<text text-anchor="middle" x="249" y="-182.3" font-family="Inter,Arial" font-size="14.00" fill="#586e75">Auth</text>
+<polygon fill="#586e75" stroke="#586e75" points="223.16,-168 274.84,-168 293.24,-204 204.76,-204 223.16,-168"/>
+<text text-anchor="middle" x="249" y="-182.3" font-family="Inter,Arial" font-size="14.00" fill="#ffffff">Auth</text>
 </g>
 <!-- mlService&#45;&gt;auth -->
 <g id="edge2" class="edge">
@@ -69,7 +69,7 @@
 <!-- login -->
 <g id="node3" class="node">
 <title>login</title>
-<polygon fill="#fefefe" stroke="#dddddd" points="284.58,-120 227.42,-120 207.07,-84 304.93,-84 284.58,-120"/>
+<polygon fill="#dddddd" stroke="#dddddd" points="284.58,-120 227.42,-120 207.07,-84 304.93,-84 284.58,-120"/>
 <text text-anchor="middle" x="256" y="-98.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">Login</text>
 </g>
 <!-- login_user -->
@@ -101,7 +101,7 @@
 <!-- token -->
 <g id="node4" class="node">
 <title>token</title>
-<polygon fill="#fefefe" stroke="#dddddd" points="404.05,-120 343.95,-120 322.55,-84 425.45,-84 404.05,-120"/>
+<polygon fill="#dddddd" stroke="#dddddd" points="404.05,-120 343.95,-120 322.55,-84 425.45,-84 404.05,-120"/>
 <text text-anchor="middle" x="374" y="-98.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">Token</text>
 </g>
 <!-- token_token -->
