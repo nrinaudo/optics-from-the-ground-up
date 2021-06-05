@@ -1,16 +1,7 @@
 digraph {
-    bgcolor=transparent
-
-    // Default theme
-    node[shape="rectangle" style="rounded,filled" color="#586E75" fillcolor="#ffffff" fontcolor="#586E75" fontname="Inter,Arial"]
-    edge[color="#586E75" fontcolor="#586E75" fontname="Inter,Arial" fontsize=11]
-
-    // product types
-    classifier[shape=trapezium style=filled fontcolor="#FFFFFF" fillcolor="#586E75"]
-
-    classifier[label=Classifier]
-    classifier_name[label=String shape=box]
-    classifier_classCount[label=Int shape=box]
+    classifier[label=Classifier class="product"]
+    classifier_name[label=String]
+    classifier_classCount[label=Int]
 
     classifier -> classifier_name[label=name]
     classifier -> classifier_classCount[label=classCount]

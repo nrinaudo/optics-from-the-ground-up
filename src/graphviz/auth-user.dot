@@ -1,43 +1,33 @@
 digraph {
-    bgcolor=transparent
+    mlService, classifier, login, token
 
-    // Default theme
-    node[shape="rectangle" style="rounded,filled" color="#586E75" fillcolor="#ffffff" fontcolor="#586E75" fontname="Inter,Arial"]
-    edge[color="#586E75" fontcolor="#586E75" fontname="Inter,Arial" fontsize=11]
+    mlService[label=MlService class="product,disabled"]
 
-    // product types
-    mlService, classifier, login, token [shape=trapezium style=filled fontcolor="#FFFFFF" fillcolor="#586E75"]
+    classifier[label=Classifier class="product,disabled"]
+    classifier_name[label=String class="disabled"]
+    classifier_classCount[label=Int class="disabled"]
 
-    // sum types
-    auth[shape=invtrapezium, style=filled fontcolor="#FFFFFF" fillcolor="#586E75"]
+    auth[label=Auth class="sum"]
 
-    mlService[label=MlService fillcolor="#dddddd" color="#dddddd" fontcolor="#eeeeee"]
+    login[label=Login class="product,disabled"]
+    login_user[label=String]
+    login_password[label=String class="disabled"]
 
-    classifier[label=Classifier fillcolor="#dddddd" color="#dddddd" fontcolor="#eeeeee"]
-    classifier_name[label=String shape=box color="#dddddd" fontcolor="#eeeeee"]
-    classifier_classCount[label=Int shape=box color="#dddddd" fontcolor="#eeeeee"]
+    token[label=Token class="product,disabled"]
+    token_token[label=String class="disabled"]
 
-    auth[label=Auth]
+    mlService -> classifier [label=classifier class="disabled"]
+    mlService -> auth [label=auth class="disabled"]
 
-    login[label=Login fillcolor="#dddddd" color="#dddddd" fontcolor="#eeeeee"]
-    login_user[label=String shape=box]
-    login_password[label=String shape=box color="#dddddd" fontcolor="#eeeeee"]
+    classifier -> classifier_name [label=name class="disabled"]
+    classifier -> classifier_classCount [label=classCount class="disabled"]
 
-    token[label=Token fillcolor="#dddddd" color="#dddddd" fontcolor="#eeeeee"]
-    token_token[label=String shape=box color="#dddddd" fontcolor="#eeeeee"]
+    token -> token_token [label=token class="disabled"]
 
-    mlService -> classifier[label=classifier color="#dddddd" fontcolor="#dddddd"]
-    mlService -> auth[label=auth color="#dddddd" fontcolor="#dddddd"]
+    login -> login_user [label=user class="disabled"]
+    login -> login_password [label=password class="disabled"]
 
-    classifier -> classifier_name[label=name color="#dddddd" fontcolor="#dddddd"]
-    classifier -> classifier_classCount[label=classCount color="#dddddd" fontcolor="#dddddd"]
-
-    token -> token_token[label=token color="#dddddd" fontcolor="#dddddd"]
-
-    login -> login_user[label=user color="#dddddd" fontcolor="#dddddd"]
-    login -> login_password[label=password color="#dddddd" fontcolor="#dddddd"]
-
-    auth -> token[style=dashed color="#dddddd" fontcolor="#dddddd"]
-    auth -> login[style=dashed color="#dddddd" fontcolor="#dddddd"]
+    auth -> token[class="value,disabled"]
+    auth -> login[class="value,disabled"]
     auth -> login_user[label="???"]
 }

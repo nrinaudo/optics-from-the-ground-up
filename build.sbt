@@ -2,34 +2,12 @@ enablePlugins(TutPlugin, GhpagesPlugin)
 
 organization := "com.nrinaudo"
 scalaVersion := "2.12.11"
+graphvizStylesheet := Some(graphvizSourceDirectory.value / "style.dss")
 
-val tutDirName = settingKey[String]("tut output directory")
-tutDirName := "./"
+Tut / siteSubdirName := "./"
 
-val graphvizDirName = settingKey[String]("graphviz output directory")
-graphvizDirName := "./img"
+addMappingsToSiteDir(tut, Tut / siteSubdirName)
 
-val graphviz = taskKey[Seq[(File, String)]]("compile all dot files")
-graphviz := {
-  import scala.sys.process._
-
-  val files = (sourceDirectory.value / "graphviz") ** "*.dot"
-  val outDir = target.value / "graphviz"
-
-  outDir.mkdirs
-
-  files.get.map { file =>
-    val outFile = file.getName().replace(".dot", ".svg")
-    val outPath = outDir / outFile
-
-    s"dot -Tsvg $file -o $outPath" !
-
-    (outPath, outFile)
-  }
-}
-
-addMappingsToSiteDir(tut, tutDirName)
-addMappingsToSiteDir(graphviz, graphvizDirName)
 SitePlugin.autoImport.makeSite / includeFilter :=
     "*.yml" | "*.md" | "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.eot" | "*.svg" | "*.ttf" |
     "*.woff" | "*.woff2" | "*.otf"
