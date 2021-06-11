@@ -1,0 +1,52 @@
+node {
+    shape: "rectangle";
+    style: "rounded,filled";
+    color: "#586E75";
+    fillcolor: "#ffffff";
+    fontcolor: "#586E75";
+    fontname: "Inter,Arial";
+}
+
+edge {
+    color: "#586E75";
+    fontcolor: "#586E75";
+    fontname: "Inter,Arial";
+    fontsize: 11;
+}
+
+graph {
+    bgcolor: transparent;
+}
+
+node.product {
+    shape: trapezium;
+    style: filled;
+    fontcolor: "#FFFFFF";
+    fillcolor: "#586E75";
+}
+
+node.sum {
+    shape: invtrapezium;
+    style: filled;
+    fontcolor: "#FFFFFF";
+    fillcolor: "#586E75";
+}
+
+.disabled {
+    color: "#D0DCE3";
+    fontcolor: "#D0DCE3";
+}
+
+node.product.disabled {
+    fillcolor: "#D0DCE3";
+    fontcolor: "#eeeeee";
+}
+
+node.sum.disabled {
+    fillcolor: "#D0DCE3";
+    fontcolor: "#eeeeee";
+}
+
+edge.value {
+    style: dashed;
+}

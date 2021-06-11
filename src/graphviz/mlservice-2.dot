@@ -1,42 +1,30 @@
 digraph {
-    bgcolor=transparent
+    mlService[label=MlService class="product"]
 
-    // Default theme
-    node[shape="rectangle" style="rounded,filled" color="#586E75" fillcolor="#ffffff" fontcolor="#586E75" fontname="Inter,Arial"]
-    edge[color="#586E75" fontcolor="#586E75" fontname="Inter,Arial" fontsize=11]
+    classifier[label=Classifier class="product"]
+    classifier_name[label=String]
+    classifier_classCount[label=Int]
 
-    // product types
-    mlService, classifier, login, token [shape=trapezium style=filled fontcolor="#FFFFFF" fillcolor="#586E75"]
+    auth[label=Auth class="sum"]
 
-    // sum types
-    auth[shape=invtrapezium, style=filled fontcolor="#FFFFFF" fillcolor="#586E75"]
+    login[label=Login class="product" style=invis]
+    login_user[label=String style=invis]
+    login_password[label=String style=invis]
 
-    mlService[label=MlService]
+    token[label=Token class="product" style=invis]
+    token_token[label=String style=invis]
 
-    classifier[label=Classifier]
-    classifier_name[label=String shape=box]
-    classifier_classCount[label=Int shape=box]
+    mlService -> classifier [label=classifier]
+    mlService -> auth [label=auth]
 
-    auth[label=Auth]
+    classifier -> classifier_name [label=name]
+    classifier -> classifier_classCount [label=classCount]
 
-    login[label=Login style=invis]
-    login_user[label=String shape=box style=invis]
-    login_password[label=String shape=box style=invis]
+    token -> token_token [label=token style=invis]
 
-    token[label=Token style=invis]
-    token_token[label=String shape=box style=invis]
+    login -> login_user [label=user style=invis]
+    login -> login_password [label=password style=invis]
 
-    mlService -> classifier[label=classifier]
-    mlService -> auth[label=auth]
-
-    classifier -> classifier_name[label=name]
-    classifier -> classifier_classCount[label=classCount]
-
-    token -> token_token[label=token style=invis]
-
-    login -> login_user[label=user style=invis]
-    login -> login_password[label=password style=invis]
-
-    auth -> token[style=dashed style=invis]
-    auth -> login[style=dashed style=invis]
+    auth -> token[class="value" style=invis]
+    auth -> login[class="value" style=invis]
 }

@@ -1,17 +1,8 @@
 digraph {
-    bgcolor=transparent
+    classifier[label=Classifier class="product"]
+    classifier_name[label=String class="disabled"]
+    classifier_classCount[label=Int class="disabled"]
 
-    // Default theme
-    node[shape="rectangle" style="rounded,filled" color="#586E75" fillcolor="#ffffff" fontcolor="#586E75" fontname="Inter,Arial"]
-    edge[color="#586E75" fontcolor="#586E75" fontname="Inter,Arial" fontsize=11]
-
-    // product types
-    classifier[shape=trapezium style=filled fontcolor="#FFFFFF" fillcolor="#586E75"]
-
-    classifier[label=Classifier]
-    classifier_name[label=String shape=box color="#dddddd" fontcolor="#eeeeee"]
-    classifier_classCount[label=Int shape=box color="#dddddd" fontcolor="#eeeeee"]
-
-    classifier -> classifier_name[label=name color="#dddddd" fontcolor="#dddddd"]
-    classifier -> classifier_classCount[label=classCount color="#dddddd" fontcolor="#dddddd"]
+    classifier -> classifier_name[label=name class="disabled"]
+    classifier -> classifier_classCount[label=classCount class="disabled"]
 }
