@@ -9,67 +9,67 @@
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 292)">
 <title>%3</title>
 <!-- mlService -->
-<g id="node1" class="node">
+<g id="node1" class="node product,disabled">
 <title>mlService</title>
-<polygon fill="#dddddd" stroke="#dddddd" points="218.45,-288 131.55,-288 100.6,-252 249.4,-252 218.45,-288"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="218.45,-288 131.55,-288 100.6,-252 249.4,-252 218.45,-288"/>
 <text text-anchor="middle" x="175" y="-266.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">MlService</text>
 </g>
 <!-- classifier -->
-<g id="node2" class="node">
+<g id="node2" class="node product,disabled">
 <title>classifier</title>
-<polygon fill="#dddddd" stroke="#dddddd" points="150.98,-204 67.02,-204 37.11,-168 180.89,-168 150.98,-204"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="150.98,-204 67.02,-204 37.11,-168 180.89,-168 150.98,-204"/>
 <text text-anchor="middle" x="109" y="-182.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">Classifier</text>
 </g>
 <!-- mlService&#45;&gt;classifier -->
-<g id="edge1" class="edge">
+<g id="edge1" class="edge disabled">
 <title>mlService&#45;&gt;classifier</title>
-<path fill="none" stroke="#dddddd" d="M161,-251.61C151.75,-240.12 139.48,-224.87 129.18,-212.07"/>
-<polygon fill="#dddddd" stroke="#dddddd" points="131.75,-209.68 122.75,-204.08 126.29,-214.07 131.75,-209.68"/>
-<text text-anchor="middle" x="169" y="-225.2" font-family="Inter,Arial" font-size="11.00" fill="#dddddd">classifier</text>
+<path fill="none" stroke="#d0dce3" d="M161,-251.61C151.75,-240.12 139.48,-224.87 129.18,-212.07"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="131.75,-209.68 122.75,-204.08 126.29,-214.07 131.75,-209.68"/>
+<text text-anchor="middle" x="169" y="-225.2" font-family="Inter,Arial" font-size="11.00" fill="#d0dce3">classifier</text>
 </g>
 <!-- auth -->
-<g id="node5" class="node">
+<g id="node7" class="node sum">
 <title>auth</title>
 <polygon fill="#586e75" stroke="#586e75" points="223.16,-168 274.84,-168 293.24,-204 204.76,-204 223.16,-168"/>
 <text text-anchor="middle" x="249" y="-182.3" font-family="Inter,Arial" font-size="14.00" fill="#ffffff">Auth</text>
 </g>
 <!-- mlService&#45;&gt;auth -->
-<g id="edge2" class="edge">
+<g id="edge2" class="edge disabled">
 <title>mlService&#45;&gt;auth</title>
-<path fill="none" stroke="#dddddd" d="M190.69,-251.61C201.16,-240.01 215.09,-224.58 226.7,-211.71"/>
-<polygon fill="#dddddd" stroke="#dddddd" points="229.48,-213.85 233.58,-204.08 224.28,-209.16 229.48,-213.85"/>
-<text text-anchor="middle" x="229" y="-225.2" font-family="Inter,Arial" font-size="11.00" fill="#dddddd">auth</text>
+<path fill="none" stroke="#d0dce3" d="M190.69,-251.61C201.16,-240.01 215.09,-224.58 226.7,-211.71"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="229.48,-213.85 233.58,-204.08 224.28,-209.16 229.48,-213.85"/>
+<text text-anchor="middle" x="229" y="-225.2" font-family="Inter,Arial" font-size="11.00" fill="#d0dce3">auth</text>
 </g>
 <!-- classifier_name -->
-<g id="node6" class="node">
+<g id="node5" class="node disabled">
 <title>classifier_name</title>
-<path fill="#ffffff" stroke="#dddddd" d="M125,-120C125,-120 93,-120 93,-120 87,-120 81,-114 81,-108 81,-108 81,-96 81,-96 81,-90 87,-84 93,-84 93,-84 125,-84 125,-84 131,-84 137,-90 137,-96 137,-96 137,-108 137,-108 137,-114 131,-120 125,-120"/>
-<text text-anchor="middle" x="109" y="-98.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">String</text>
+<path fill="#ffffff" stroke="#d0dce3" d="M125,-120C125,-120 93,-120 93,-120 87,-120 81,-114 81,-108 81,-108 81,-96 81,-96 81,-90 87,-84 93,-84 93,-84 125,-84 125,-84 131,-84 137,-90 137,-96 137,-96 137,-108 137,-108 137,-114 131,-120 125,-120"/>
+<text text-anchor="middle" x="109" y="-98.3" font-family="Inter,Arial" font-size="14.00" fill="#d0dce3">String</text>
 </g>
 <!-- classifier&#45;&gt;classifier_name -->
-<g id="edge3" class="edge">
+<g id="edge3" class="edge disabled">
 <title>classifier&#45;&gt;classifier_name</title>
-<path fill="none" stroke="#dddddd" d="M109,-167.61C109,-156.77 109,-142.6 109,-130.29"/>
-<polygon fill="#dddddd" stroke="#dddddd" points="112.5,-130.08 109,-120.08 105.5,-130.08 112.5,-130.08"/>
-<text text-anchor="middle" x="124" y="-141.2" font-family="Inter,Arial" font-size="11.00" fill="#dddddd">name</text>
+<path fill="none" stroke="#d0dce3" d="M109,-167.61C109,-156.77 109,-142.6 109,-130.29"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="112.5,-130.08 109,-120.08 105.5,-130.08 112.5,-130.08"/>
+<text text-anchor="middle" x="124" y="-141.2" font-family="Inter,Arial" font-size="11.00" fill="#d0dce3">name</text>
 </g>
 <!-- classifier_classCount -->
-<g id="node7" class="node">
+<g id="node6" class="node disabled">
 <title>classifier_classCount</title>
-<path fill="#ffffff" stroke="#dddddd" d="M42,-120C42,-120 12,-120 12,-120 6,-120 0,-114 0,-108 0,-108 0,-96 0,-96 0,-90 6,-84 12,-84 12,-84 42,-84 42,-84 48,-84 54,-90 54,-96 54,-96 54,-108 54,-108 54,-114 48,-120 42,-120"/>
-<text text-anchor="middle" x="27" y="-98.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">Int</text>
+<path fill="#ffffff" stroke="#d0dce3" d="M42,-120C42,-120 12,-120 12,-120 6,-120 0,-114 0,-108 0,-108 0,-96 0,-96 0,-90 6,-84 12,-84 12,-84 42,-84 42,-84 48,-84 54,-90 54,-96 54,-96 54,-108 54,-108 54,-114 48,-120 42,-120"/>
+<text text-anchor="middle" x="27" y="-98.3" font-family="Inter,Arial" font-size="14.00" fill="#d0dce3">Int</text>
 </g>
 <!-- classifier&#45;&gt;classifier_classCount -->
-<g id="edge4" class="edge">
+<g id="edge4" class="edge disabled">
 <title>classifier&#45;&gt;classifier_classCount</title>
-<path fill="none" stroke="#dddddd" d="M68.7,-167.99C60.41,-163.1 52.3,-157.12 46,-150 40.87,-144.2 37.02,-136.83 34.18,-129.66"/>
-<polygon fill="#dddddd" stroke="#dddddd" points="37.48,-128.48 30.9,-120.17 30.86,-130.76 37.48,-128.48"/>
-<text text-anchor="middle" x="75.5" y="-141.2" font-family="Inter,Arial" font-size="11.00" fill="#dddddd">classCount</text>
+<path fill="none" stroke="#d0dce3" d="M68.7,-167.99C60.41,-163.1 52.3,-157.12 46,-150 40.87,-144.2 37.02,-136.83 34.18,-129.66"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="37.48,-128.48 30.9,-120.17 30.86,-130.76 37.48,-128.48"/>
+<text text-anchor="middle" x="75.5" y="-141.2" font-family="Inter,Arial" font-size="11.00" fill="#d0dce3">classCount</text>
 </g>
 <!-- login -->
-<g id="node3" class="node">
+<g id="node3" class="node product,disabled">
 <title>login</title>
-<polygon fill="#dddddd" stroke="#dddddd" points="284.58,-120 227.42,-120 207.07,-84 304.93,-84 284.58,-120"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="284.58,-120 227.42,-120 207.07,-84 304.93,-84 284.58,-120"/>
 <text text-anchor="middle" x="256" y="-98.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">Login</text>
 </g>
 <!-- login_user -->
@@ -79,55 +79,55 @@
 <text text-anchor="middle" x="178" y="-14.3" font-family="Inter,Arial" font-size="14.00" fill="#586e75">String</text>
 </g>
 <!-- login&#45;&gt;login_user -->
-<g id="edge6" class="edge">
+<g id="edge6" class="edge disabled">
 <title>login&#45;&gt;login_user</title>
-<path fill="none" stroke="#dddddd" d="M239.46,-83.61C228.32,-71.9 213.47,-56.29 201.16,-43.35"/>
-<polygon fill="#dddddd" stroke="#dddddd" points="203.68,-40.92 194.25,-36.08 198.61,-45.74 203.68,-40.92"/>
-<text text-anchor="middle" x="234" y="-57.2" font-family="Inter,Arial" font-size="11.00" fill="#dddddd">user</text>
+<path fill="none" stroke="#d0dce3" d="M239.46,-83.61C228.32,-71.9 213.47,-56.29 201.16,-43.35"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="203.68,-40.92 194.25,-36.08 198.61,-45.74 203.68,-40.92"/>
+<text text-anchor="middle" x="234" y="-57.2" font-family="Inter,Arial" font-size="11.00" fill="#d0dce3">user</text>
 </g>
 <!-- login_password -->
-<g id="node9" class="node">
+<g id="node9" class="node disabled">
 <title>login_password</title>
-<path fill="#ffffff" stroke="#dddddd" d="M272,-36C272,-36 240,-36 240,-36 234,-36 228,-30 228,-24 228,-24 228,-12 228,-12 228,-6 234,0 240,0 240,0 272,0 272,0 278,0 284,-6 284,-12 284,-12 284,-24 284,-24 284,-30 278,-36 272,-36"/>
-<text text-anchor="middle" x="256" y="-14.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">String</text>
+<path fill="#ffffff" stroke="#d0dce3" d="M272,-36C272,-36 240,-36 240,-36 234,-36 228,-30 228,-24 228,-24 228,-12 228,-12 228,-6 234,0 240,0 240,0 272,0 272,0 278,0 284,-6 284,-12 284,-12 284,-24 284,-24 284,-30 278,-36 272,-36"/>
+<text text-anchor="middle" x="256" y="-14.3" font-family="Inter,Arial" font-size="14.00" fill="#d0dce3">String</text>
 </g>
 <!-- login&#45;&gt;login_password -->
-<g id="edge7" class="edge">
+<g id="edge7" class="edge disabled">
 <title>login&#45;&gt;login_password</title>
-<path fill="none" stroke="#dddddd" d="M256,-83.61C256,-72.77 256,-58.6 256,-46.29"/>
-<polygon fill="#dddddd" stroke="#dddddd" points="259.5,-46.08 256,-36.08 252.5,-46.08 259.5,-46.08"/>
-<text text-anchor="middle" x="282" y="-57.2" font-family="Inter,Arial" font-size="11.00" fill="#dddddd">password</text>
+<path fill="none" stroke="#d0dce3" d="M256,-83.61C256,-72.77 256,-58.6 256,-46.29"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="259.5,-46.08 256,-36.08 252.5,-46.08 259.5,-46.08"/>
+<text text-anchor="middle" x="282" y="-57.2" font-family="Inter,Arial" font-size="11.00" fill="#d0dce3">password</text>
 </g>
 <!-- token -->
-<g id="node4" class="node">
+<g id="node4" class="node product,disabled">
 <title>token</title>
-<polygon fill="#dddddd" stroke="#dddddd" points="404.05,-120 343.95,-120 322.55,-84 425.45,-84 404.05,-120"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="404.05,-120 343.95,-120 322.55,-84 425.45,-84 404.05,-120"/>
 <text text-anchor="middle" x="374" y="-98.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">Token</text>
 </g>
 <!-- token_token -->
-<g id="node10" class="node">
+<g id="node10" class="node disabled">
 <title>token_token</title>
-<path fill="#ffffff" stroke="#dddddd" d="M390,-36C390,-36 358,-36 358,-36 352,-36 346,-30 346,-24 346,-24 346,-12 346,-12 346,-6 352,0 358,0 358,0 390,0 390,0 396,0 402,-6 402,-12 402,-12 402,-24 402,-24 402,-30 396,-36 390,-36"/>
-<text text-anchor="middle" x="374" y="-14.3" font-family="Inter,Arial" font-size="14.00" fill="#eeeeee">String</text>
+<path fill="#ffffff" stroke="#d0dce3" d="M390,-36C390,-36 358,-36 358,-36 352,-36 346,-30 346,-24 346,-24 346,-12 346,-12 346,-6 352,0 358,0 358,0 390,0 390,0 396,0 402,-6 402,-12 402,-12 402,-24 402,-24 402,-30 396,-36 390,-36"/>
+<text text-anchor="middle" x="374" y="-14.3" font-family="Inter,Arial" font-size="14.00" fill="#d0dce3">String</text>
 </g>
 <!-- token&#45;&gt;token_token -->
-<g id="edge5" class="edge">
+<g id="edge5" class="edge disabled">
 <title>token&#45;&gt;token_token</title>
-<path fill="none" stroke="#dddddd" d="M374,-83.61C374,-72.77 374,-58.6 374,-46.29"/>
-<polygon fill="#dddddd" stroke="#dddddd" points="377.5,-46.08 374,-36.08 370.5,-46.08 377.5,-46.08"/>
-<text text-anchor="middle" x="389.5" y="-57.2" font-family="Inter,Arial" font-size="11.00" fill="#dddddd">token</text>
+<path fill="none" stroke="#d0dce3" d="M374,-83.61C374,-72.77 374,-58.6 374,-46.29"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="377.5,-46.08 374,-36.08 370.5,-46.08 377.5,-46.08"/>
+<text text-anchor="middle" x="389.5" y="-57.2" font-family="Inter,Arial" font-size="11.00" fill="#d0dce3">token</text>
 </g>
 <!-- auth&#45;&gt;login -->
-<g id="edge9" class="edge">
+<g id="edge9" class="edge value,disabled">
 <title>auth&#45;&gt;login</title>
-<path fill="none" stroke="#dddddd" stroke-dasharray="5,2" d="M250.48,-167.61C251.41,-156.77 252.62,-142.6 253.67,-130.29"/>
-<polygon fill="#dddddd" stroke="#dddddd" points="257.18,-130.35 254.54,-120.08 250.2,-129.75 257.18,-130.35"/>
+<path fill="none" stroke="#d0dce3" stroke-dasharray="5,2" d="M250.48,-167.61C251.41,-156.77 252.62,-142.6 253.67,-130.29"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="257.18,-130.35 254.54,-120.08 250.2,-129.75 257.18,-130.35"/>
 </g>
 <!-- auth&#45;&gt;token -->
-<g id="edge8" class="edge">
+<g id="edge8" class="edge value,disabled">
 <title>auth&#45;&gt;token</title>
-<path fill="none" stroke="#dddddd" stroke-dasharray="5,2" d="M274.9,-168.01C293.55,-155.78 318.9,-139.14 339.3,-125.76"/>
-<polygon fill="#dddddd" stroke="#dddddd" points="341.26,-128.66 347.7,-120.25 337.42,-122.81 341.26,-128.66"/>
+<path fill="none" stroke="#d0dce3" stroke-dasharray="5,2" d="M274.9,-168.01C293.55,-155.78 318.9,-139.14 339.3,-125.76"/>
+<polygon fill="#d0dce3" stroke="#d0dce3" points="341.26,-128.66 347.7,-120.25 337.42,-122.81 341.26,-128.66"/>
 </g>
 <!-- auth&#45;&gt;login_user -->
 <g id="edge10" class="edge">

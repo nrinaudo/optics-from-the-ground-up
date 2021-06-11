@@ -9,7 +9,7 @@
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 124)">
 <title>%3</title>
 <!-- classifier -->
-<g id="node1" class="node">
+<g id="node1" class="node product">
 <title>classifier</title>
 <polygon fill="#586e75" stroke="#586e75" points="113.68,-120 29.71,-120 -0.19,-84 143.58,-84 113.68,-120"/>
 <text text-anchor="middle" x="71.69" y="-98.3" font-family="Inter,Arial" font-size="14.00" fill="#ffffff">Classifier</text>

@@ -9,7 +9,7 @@
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
 <title>%3</title>
 <!-- auth -->
-<g id="node1" class="node">
+<g id="node1" class="node sum">
 <title>auth</title>
 <polygon fill="#586e75" stroke="#586e75" points="37.16,-72 88.84,-72 107.24,-108 18.76,-108 37.16,-72"/>
 <text text-anchor="middle" x="63" y="-86.3" font-family="Inter,Arial" font-size="14.00" fill="#ffffff">Auth</text>
@@ -21,7 +21,7 @@
 <text text-anchor="middle" x="27" y="-14.3" font-family="Inter,Arial" font-size="14.00" fill="#586e75">Login</text>
 </g>
 <!-- auth&#45;&gt;login -->
-<g id="edge2" class="edge">
+<g id="edge2" class="edge value">
 <title>auth&#45;&gt;login</title>
 <path fill="none" stroke="#586e75" stroke-dasharray="5,2" d="M54.1,-71.7C50,-63.73 45.05,-54.1 40.51,-45.26"/>
 <polygon fill="#586e75" stroke="#586e75" points="43.48,-43.4 35.8,-36.1 37.26,-46.6 43.48,-43.4"/>
@@ -33,7 +33,7 @@
 <text text-anchor="middle" x="100" y="-14.3" font-family="Inter,Arial" font-size="14.00" fill="#586e75">Token</text>
 </g>
 <!-- auth&#45;&gt;token -->
-<g id="edge1" class="edge">
+<g id="edge1" class="edge value">
 <title>auth&#45;&gt;token</title>
 <path fill="none" stroke="#586e75" stroke-dasharray="5,2" d="M72.15,-71.7C76.4,-63.64 81.56,-53.89 86.27,-44.98"/>
 <polygon fill="#586e75" stroke="#586e75" points="89.38,-46.58 90.96,-36.1 83.19,-43.31 89.38,-46.58"/>
